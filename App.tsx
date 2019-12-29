@@ -3,22 +3,49 @@ import { StyleSheet, View, ScrollView, TouchableOpacity, Text } from 'react-nati
 import { Audio } from 'expo-av'
 import { PlaybackSource } from 'expo-av/build/AV'
 
-export default class App extends React.Component {
+import { createAppContainer } from 'react-navigation'
+import { createStackNavigator } from 'react-navigation-stack'
+import CharacterSelect from './CharacterSelect'
+
+const rowOne: MarkRowProps = {
+  markSquareProps: [
+    { 
+      sound: require('./assets/sounds/praise_allah.mp3'),
+      text: 'Praise Allah!'
+    },
+    {
+      sound: require('./assets/sounds/i_love_it.mp3'),
+      text: 'I love it!!'
+    }
+  ]
+}
+
+const rowTwo: MarkRowProps = {
+  markSquareProps: [
+    {
+      sound: null,
+      text: '2A'
+    },
+    {
+      sound: null,
+      text: '2B'
+    }
+  ]
+}
+
+const markGridProps: MarkGridProps = {
+  markRowProps: [
+    rowOne,
+    rowTwo
+  ]
+}
+
+class SoundGrid extends React.Component {
   render () {
     return (
-      <ScrollView>
-        <View style={styles.container}>
-          <MarkRow markSquareProps={[
-              { 
-                sound: require('./assets/sounds/praise_allah.mp3'),
-                text: 'Praise Allah!'
-              },
-              {
-                sound: require('./assets/sounds/i_love_it.mp3'),
-                text: 'I love it!'
-              }
-            ]} 
-          />
+      <ScrollView style={styles.container}>
+        <View>
+          <MarkGrid {...markGridProps} />
         </View>
       </ScrollView>
     );
@@ -87,10 +114,36 @@ class MarkRow extends React.Component<MarkRowProps> {
   }
 }
 
+interface MarkGridProps {
+  markRowProps: MarkRowProps[]
+}
+
+class MarkGrid extends React.Component<MarkGridProps> {
+  render() {
+    return (
+      <View>
+        {
+          this.props.markRowProps.map((props, index) =>
+            <MarkRow key={index} {...props} />
+          )
+        }
+      </View>
+    )
+  }
+}
+
+const AppNavigator = createStackNavigator({
+  Home: {
+    screen: CharacterSelect
+  },
+});
+
+export default createAppContainer(AppNavigator);
+
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 60,
-    backgroundColor: 'grey',
+    backgroundColor: '#696969',
   },
   markSquare: {
     width: 160,
@@ -98,10 +151,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'navy',
     borderRadius: 10,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderColor: 'white',
+    borderWidth: 1
   },
   markRowContainer: {
     paddingHorizontal: 30,
+    paddingBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
