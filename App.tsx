@@ -1,18 +1,18 @@
 import React from 'react'
-import { StyleSheet, View, ScrollView, TouchableOpacity, Text } from 'react-native'
-
 import { createAppContainer } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
-import CharacterSelect from './CharacterSelect'
-import SoundGrid from './SoundGrid'
+import CharacterSelect from './screens/CharacterSelect'
+import SoundGrid from './screens/SoundGrid'
+import StartScreen from './screens/StartScreen'
 
 const AppNavigator = createStackNavigator(
   {
+    StartScreen: StartScreen,
     CharacterSelect: CharacterSelect,
     SoundGrid: SoundGrid,
   },
   {
-    initialRouteName: 'CharacterSelect'
+    initialRouteName: 'StartScreen'
   }
 );
 

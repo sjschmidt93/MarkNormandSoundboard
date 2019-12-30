@@ -3,18 +3,36 @@ import { View, Text, StyleSheet, Image, Linking } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-navigation'
 import { SocialIcon } from 'react-native-elements'
+import { Audio } from 'expo-av'
 
-export interface NaivgationScreenProps {
+export interface NavigationProps {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>
 }
 
-export default class CharacterSelect extends React.Component<NaivgationScreenProps> {
+export default class CharacterSelect extends React.Component<NavigationProps> {
+  joeAudio = new Audio.Sound()
+  markAudio = new Audio.Sound()
+
+  componentDidMount() {
+    this.loadAudio()
+  }
+
+  loadAudio = async () => {
+    try {
+      await this.markAudio.loadAsync(require('./../assets/sounds/praise_allah.mp3'))
+      await this.joeAudio.loadAsync(require('./../assets/sounds/praise_allah.mp3'))
+    } catch (error) {
+      console.warn("Failed to load audio")
+    }
+  }
+
   onPressMark = () => {
-    this.props.navigation.navigate('SoundGrid', { comedian: 'Mark'})
+    this.props.navigation.navigate('SoundGrid', { comedian: 'Mark Normand'})
+    this.markAudio.playAsync()
   }
 
   onPressJoe = () => {
-    this.props.navigation.navigate('SoundGrid', { comedian: 'Joe' })
+    this.props.navigation.navigate('SoundGrid', { comedian: 'Joe List' })
   }
 
   render() {
@@ -25,13 +43,13 @@ export default class CharacterSelect extends React.Component<NaivgationScreenPro
             <View style={styles.comedianButtonsRowContainer}>
               <View style={styles.comedianButtonContainer}>
                 <TouchableOpacity onPress={this.onPressMark}>
-                  <Image source={require('./assets/images/mark_select_screen.jpg')} style={styles.comedianButton} />
+                  <Image source={require('./../assets/images/mark_select_screen.jpg')} style={styles.comedianButton} />
                 </TouchableOpacity>
                 <Text style={styles.comedianText}>Mark Normand</Text>
               </View>
               <View style={styles.comedianButtonContainer}>
                 <TouchableOpacity onPress={this.onPressJoe}>
-                  <Image source={require('./assets/images/joe_select_screen.jpg')} style={styles.comedianButton} />
+                  <Image source={require('./../assets/images/joe_select_screen.jpg')} style={styles.comedianButton} />
                 </TouchableOpacity>
                 <Text style={styles.comedianText}>Joe List</Text>
               </View>
@@ -48,10 +66,12 @@ export default class CharacterSelect extends React.Component<NaivgationScreenPro
   }
 }
 
+export const tuesdaysBlue = '#032D46'
+
 const styles = StyleSheet.create({
   container: {
     paddingTop: 20,
-    backgroundColor: '#032D46',
+    backgroundColor: tuesdaysBlue,
     width: '100%',
     flex: 1,
     justifyContent: 'space-between'

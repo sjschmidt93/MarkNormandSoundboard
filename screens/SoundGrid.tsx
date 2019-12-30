@@ -2,15 +2,16 @@ import React from "react"
 import { ScrollView, View, TouchableOpacity, StyleSheet, Text } from "react-native"
 import { PlaybackSource } from "expo-av/build/AV"
 import { Audio } from 'expo-av'
+import { NavigationProps, tuesdaysBlue } from "./CharacterSelect"
 
 const rowOne: MarkRowProps = {
     markSquareProps: [
       { 
-        sound: require('./assets/sounds/praise_allah.mp3'),
+        sound: require('./../assets/sounds/praise_allah.mp3'),
         text: 'Praise Allah!'
       },
       {
-        sound: require('./assets/sounds/i_love_it.mp3'),
+        sound: require('./../assets/sounds/i_love_it.mp3'),
         text: 'I love it!!'
       }
     ]
@@ -36,11 +37,12 @@ const rowOne: MarkRowProps = {
     ]
   }
   
- export default class SoundGrid extends React.Component {
+ export default class SoundGrid extends React.Component<NavigationProps> {
     render () {
       return (
         <ScrollView style={styles.container}>
           <View>
+            <Text>{this.props.navigation.getParam('comedian')}</Text>
             <MarkGrid {...markGridProps} />
           </View>
         </ScrollView>
@@ -67,7 +69,6 @@ const rowOne: MarkRowProps = {
   
     loadAudio = async () => {
       try {
-        const sound = `./assets/sounds/praise_allah.mp3`
         await this.audioObject.loadAsync(this.props.sound)
       } catch (error) {
         console.warn('Failed to to load' + this.props.sound)
@@ -131,12 +132,12 @@ const rowOne: MarkRowProps = {
   const styles = StyleSheet.create({
     container: {
       paddingVertical: 60,
-      backgroundColor: '#696969',
+      backgroundColor: tuesdaysBlue,
     },
     markSquare: {
       width: 160,
       height: 100,
-      backgroundColor: 'navy',
+      backgroundColor: 'grey',
       borderRadius: 10,
       justifyContent: 'center',
       alignItems: 'center',
