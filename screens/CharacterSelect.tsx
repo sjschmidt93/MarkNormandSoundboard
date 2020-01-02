@@ -5,11 +5,19 @@ import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-n
 import { SocialIcon } from 'react-native-elements'
 import { Audio } from 'expo-av'
 
+export const tuesdaysBlue = '#032D46'
+
 export interface NavigationProps {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>
 }
 
 export default class CharacterSelect extends React.Component<NavigationProps> {
+  static navigationOptions = {
+    headerStyle: { 
+      backgroundColor: tuesdaysBlue
+    }
+  }
+
   joeAudio = new Audio.Sound()
   markAudio = new Audio.Sound()
 
@@ -38,8 +46,8 @@ export default class CharacterSelect extends React.Component<NavigationProps> {
   render() {
       return (
         <View style={styles.container}>
-          <Text style={styles.chooseText}>Choose your Comedian</Text>
           <View>
+           <Text style={styles.chooseText}>Choose your Comedian</Text>
             <View style={styles.comedianButtonsRowContainer}>
               <View style={styles.comedianButtonContainer}>
                 <TouchableOpacity onPress={this.onPressMark}>
@@ -66,8 +74,6 @@ export default class CharacterSelect extends React.Component<NavigationProps> {
   }
 }
 
-export const tuesdaysBlue = '#032D46'
-
 const styles = StyleSheet.create({
   container: {
     paddingTop: 20,
@@ -78,7 +84,8 @@ const styles = StyleSheet.create({
   },
   chooseText: {
     color: 'white',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontSize: 24
   },
   text: {
     paddingTop: 5

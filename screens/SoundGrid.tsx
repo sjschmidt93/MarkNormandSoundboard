@@ -1,66 +1,107 @@
 import React from "react"
 import { ScrollView, View, TouchableOpacity, StyleSheet, Text } from "react-native"
+import { NavigationProps, tuesdaysBlue } from "./CharacterSelect"
 import { PlaybackSource } from "expo-av/build/AV"
 import { Audio } from 'expo-av'
-import { NavigationProps, tuesdaysBlue } from "./CharacterSelect"
 
-const rowOne: MarkRowProps = {
-    markSquareProps: [
-      { 
-        sound: require('./../assets/sounds/praise_allah.mp3'),
-        text: 'Praise Allah!'
-      },
-      {
-        sound: require('./../assets/sounds/i_love_it.mp3'),
-        text: 'I love it!!'
-      }
-    ]
-  }
-  
-  const rowTwo: MarkRowProps = {
-    markSquareProps: [
-      {
-        sound: null,
-        text: '2A'
-      },
-      {
-        sound: null,
-        text: '2B'
-      }
-    ]
-  }
-  
-  const markGridProps: MarkGridProps = {
-    markRowProps: [
-      rowOne,
-      rowTwo
-    ]
-  }
+const markGridProps: SquareProps[][] = [
+  [
+    { 
+      sound: require('./../assets/sounds/praise_allah.mp3'),
+      text: 'Praise Allah!'
+    },
+    {
+      sound: require('./../assets/sounds/i_love_it.mp3'),
+      text: 'I love it!!'
+    }
+  ],
+  [
+    {
+      sound: null,
+      text: 'M2A'
+    },
+    {
+      sound: null,
+      text: 'M2B'
+    }
+  ], [
+    {
+      sound: null,
+      text: 'M3A'
+    },
+    {
+      sound: null,
+      text: 'M3B'
+    }
+  ]
+]
+
+const joeGridProps = [
+  [
+    {
+      sound: null,
+      text: 'J2A'
+    },
+    {
+      sound: null,
+      text: 'J2B'
+    }
+  ],
+  [
+    {
+      sound: null,
+      text: 'J3A'
+    },
+    {
+      sound: null,
+      text: 'J3B'
+    }
+  ]
+]
+
   
  export default class SoundGrid extends React.Component<NavigationProps> {
+  static navigationOptions = {
+    headerStyle: { 
+      backgroundColor: tuesdaysBlue
+    }
+  }
+
+   comedian: string = this.props.navigation.getParam('comedian')
+
+    gridProps = this.comedian === 'Joe List'
+      ? joeGridProps
+      : markGridProps
+  
     render () {
       return (
-        <ScrollView style={styles.container}>
+        <ScrollView style={styles.scrollContainer}>
           <View>
-            <Text>{this.props.navigation.getParam('comedian')}</Text>
-            <MarkGrid {...markGridProps} />
+            <Text style={styles.comedianText}>{this.comedian}</Text>
+            <View>
+              {
+                this.gridProps.map((props, index) =>
+                  <Row key={index} squareProps={props} />
+                )
+              }
+            </View>
           </View>
         </ScrollView>
       );
     }
   }
   
-  interface MarkSquareProps {
+  interface SquareProps {
     sound: PlaybackSource
     text: String
   }
   
-  interface MarkSquareState {
+  interface SquareState {
     played: boolean
   }
   
-  class MarkSquare extends React.Component<MarkSquareProps, MarkSquareState> {
-    audioObject = new Audio.Sound()
+  class Square extends React.Component<SquareProps, SquareState> {
+    sound = new Audio.Sound()
   
     componentDidMount() {
       this.state = { played: false }
@@ -69,7 +110,7 @@ const rowOne: MarkRowProps = {
   
     loadAudio = async () => {
       try {
-        await this.audioObject.loadAsync(this.props.sound)
+        await this.sound.loadAsync(this.props.sound)
       } catch (error) {
         console.warn('Failed to to load' + this.props.sound)
       }
@@ -77,51 +118,33 @@ const rowOne: MarkRowProps = {
   
     onPress = () => {
       if (this.state.played) {
-        this.audioObject.replayAsync()
+        this.sound.replayAsync()
       } else {
-        this.audioObject.playAsync()
+        this.sound.playAsync()
         this.state = { played: true }
       }
     }
   
     render() {
       return (
-        <TouchableOpacity onPress={this.onPress} style={styles.markSquare}>
-          <Text style={styles.markSquareText}>{this.props.text}</Text>
+        <TouchableOpacity onPress={this.onPress} style={styles.square}>
+          <Text style={styles.squareText}>{this.props.text}</Text>
         </TouchableOpacity>
       )
     }
   }
   
-  interface MarkRowProps {
-    markSquareProps: MarkSquareProps[]
+  interface RowProps {
+    squareProps: SquareProps[]
   }
   
-  class MarkRow extends React.Component<MarkRowProps> {
+  class Row extends React.Component<RowProps> {
     render() {
       return (
         <View style ={styles.markRowContainer}>
           {
-            this.props.markSquareProps.map((props, index) => 
-              <MarkSquare key={index} {...props} />
-            )
-          }
-        </View>
-      )
-    }
-  }
-  
-  interface MarkGridProps {
-    markRowProps: MarkRowProps[]
-  }
-  
-  class MarkGrid extends React.Component<MarkGridProps> {
-    render() {
-      return (
-        <View>
-          {
-            this.props.markRowProps.map((props, index) =>
-              <MarkRow key={index} {...props} />
+            this.props.squareProps.map((props, index) => 
+              <Square key={index} {...props} />
             )
           }
         </View>
@@ -130,11 +153,11 @@ const rowOne: MarkRowProps = {
   }
 
   const styles = StyleSheet.create({
-    container: {
-      paddingVertical: 60,
-      backgroundColor: tuesdaysBlue,
+    scrollContainer: {
+      paddingVertical: 20,
+      backgroundColor: tuesdaysBlue
     },
-    markSquare: {
+    square: {
       width: 160,
       height: 100,
       backgroundColor: 'grey',
@@ -150,7 +173,14 @@ const rowOne: MarkRowProps = {
       flexDirection: 'row',
       justifyContent: 'space-between'
     },
-    markSquareText: {
+    squareText: {
       color: 'red'
+    },
+    comedianText: {
+      color: 'white',
+      textAlign: 'center',
+      fontSize: 24,
+      paddingBottom: 20
     }
-  });
+  })
+  
