@@ -3,95 +3,38 @@ import { ScrollView, View, TouchableOpacity, StyleSheet, Text } from "react-nati
 import { NavigationProps, tuesdaysBlue } from "./CharacterSelect"
 import { PlaybackSource } from "expo-av/build/AV"
 import { Audio } from 'expo-av'
+import { markGridProps, joeGridProps } from "../grids"
 
-const markGridProps: SquareProps[][] = [
-  [
-    { 
-      sound: require('./../assets/sounds/praise_allah.mp3'),
-      text: 'Praise Allah!'
-    },
-    {
-      sound: require('./../assets/sounds/i_love_it.mp3'),
-      text: 'I love it!!'
-    }
-  ],
-  [
-    {
-      sound: null,
-      text: 'M2A'
-    },
-    {
-      sound: null,
-      text: 'M2B'
-    }
-  ], [
-    {
-      sound: null,
-      text: 'M3A'
-    },
-    {
-      sound: null,
-      text: 'M3B'
-    }
-  ]
-]
-
-const joeGridProps = [
-  [
-    {
-      sound: null,
-      text: 'J2A'
-    },
-    {
-      sound: null,
-      text: 'J2B'
-    }
-  ],
-  [
-    {
-      sound: null,
-      text: 'J3A'
-    },
-    {
-      sound: null,
-      text: 'J3B'
-    }
-  ]
-]
-
-  
- export default class SoundGrid extends React.Component<NavigationProps> {
+export default class SoundGrid extends React.Component<NavigationProps> {
   static navigationOptions = {
     headerStyle: { 
       backgroundColor: tuesdaysBlue
     }
   }
 
-   comedian: string = this.props.navigation.getParam('comedian')
+  comedian: string = this.props.navigation.getParam('comedian')
 
-    gridProps = this.comedian === 'Joe List'
-      ? joeGridProps
-      : markGridProps
-  
-    render () {
-      return (
-        <ScrollView style={styles.scrollContainer}>
-          <View>
-            <Text style={styles.comedianText}>{this.comedian}</Text>
-            <View>
-              {
-                this.gridProps.map((props, index) =>
-                  <Row key={index} squareProps={props} />
-                )
-              }
-            </View>
-          </View>
-        </ScrollView>
-      );
-    }
+  gridProps = this.comedian === 'Joe List'
+    ? joeGridProps
+    : markGridProps
+
+  render () {
+    return (
+      <ScrollView style={styles.scrollContainer}>
+        <View style={styles.container}>
+          <Text style={styles.comedianText}>{this.comedian}</Text>
+          {
+            this.gridProps.map((props, index) =>
+              <Row key={index} squareProps={props} />
+            )
+          }
+        </View>
+      </ScrollView>
+    );
   }
+}
   
-  interface SquareProps {
+  export interface SquareProps {
     sound: PlaybackSource
     text: String
   }
@@ -152,7 +95,18 @@ const joeGridProps = [
     }
   }
 
+  class PlaybackButtons extends React.Component {
+    render() {
+      return (
+        null
+      )
+    }
+  }
+
   const styles = StyleSheet.create({
+    container: {
+      paddingBottom: 20
+    },
     scrollContainer: {
       paddingVertical: 20,
       backgroundColor: tuesdaysBlue

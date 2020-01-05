@@ -40,15 +40,20 @@ export default class StartScreen extends React.Component<NavigationProps, StartS
     this.sound.setIsMutedAsync(!this.state.muted)
   }
 
+  onPressStart = () =>
+    this.props.navigation.navigate('CharacterSelect', { sound: this.sound })
+
   render() {
     return (
-      <View style={styles.container}>
-        <Image style={styles.tuesdaysLogo} source={require('./../assets/images/tuesdays_logo.jpg')} />
-        <TouchableOpacity onPress={this.onPressMute}>
-          <Octicons name={this.state.muted ? "mute" : "unmute"} size={32} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.startTextContainer} onPress={() => this.props.navigation.navigate('CharacterSelect')}>
-          <Text style={styles.startText}>Start</Text>
+      <View style={styles.outerContainer}>
+        <View style={styles.container}>
+          <Image style={styles.tuesdaysLogo} source={require('./../assets/images/tuesdays_logo.jpg')} />
+          <TouchableOpacity style={styles.startTextContainer} onPress={this.onPressStart}>
+            <Text style={styles.startText}>Start</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.muteButtonContainer} onPress={this.onPressMute}>
+          <Octicons name={this.state.muted ? "mute" : "unmute"} size={25} color="white" />
         </TouchableOpacity>
       </View>
     )
@@ -56,26 +61,33 @@ export default class StartScreen extends React.Component<NavigationProps, StartS
 }
 
 const styles = StyleSheet.create({
-  container: {
+  outerContainer: {
     backgroundColor: tuesdaysBlue,
     flex: 1,
+    //justifyContent: 'space-around',
+  },
+  container: {
     justifyContent: 'space-around',
+    flex: 1,
     alignItems: 'center',
-    width: '100%'
   },
   tuesdaysLogo: {
     height: 400,
     width: 400
   },
   startTextContainer: {
-    // borderColor: 'red',
-    // borderWidth: 5,
-    // borderRadius: 100,
-    // width: '100%',
-    // backgroundColor: tuesdaysBlue
+    borderColor: 'white',
+    borderWidth: 5,
+    borderRadius: 25,
+    padding: 5,
+    margin: 5
+  },
+  muteButtonContainer: {
+    paddingBottom: 10,
+    paddingLeft: 10
   },
   startText: {
-    fontSize: 48,
+    fontSize: 38,
     color: 'white',
     padding: 5
   }

@@ -18,6 +18,8 @@ export default class CharacterSelect extends React.Component<NavigationProps> {
     }
   }
 
+  startScreenSound = this.props.navigation.getParam('sound')
+
   joeAudio = new Audio.Sound()
   markAudio = new Audio.Sound()
 
@@ -37,6 +39,7 @@ export default class CharacterSelect extends React.Component<NavigationProps> {
   onPressMark = () => {
     this.props.navigation.navigate('SoundGrid', { comedian: 'Mark Normand'})
     this.markAudio.playAsync()
+    this.startScreenSound.stopAsync()
   }
 
   onPressJoe = () => {
