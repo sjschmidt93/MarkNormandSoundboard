@@ -1,15 +1,26 @@
 import React from "react"
-import { ScrollView, View, TouchableOpacity, StyleSheet, Text } from "react-native"
+import { ScrollView, View, TouchableOpacity, StyleSheet, Text, Animated } from "react-native"
 import { NavigationProps, tuesdaysBlue } from "./CharacterSelect"
 import { PlaybackSource } from "expo-av/build/AV"
 import { Audio } from 'expo-av'
 import { markGridProps, joeGridProps } from "../grids"
+import { Foundation, Ionicons } from '@expo/vector-icons'
+import _ from "lodash"
 
-export default class SoundGrid extends React.Component<NavigationProps> {
+interface SoundGridState {
+  playingSound: Audio.Sound
+}
+
+export default class SoundGrid extends React.Component<NavigationProps, SoundGridState> {
   static navigationOptions = {
     headerStyle: { 
       backgroundColor: tuesdaysBlue
     }
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = { playingSound: null }
   }
 
   comedian: string = this.props.navigation.getParam('comedian')
@@ -18,16 +29,26 @@ export default class SoundGrid extends React.Component<NavigationProps> {
     ? joeGridProps
     : markGridProps
 
+  onPressStop = () => this.setState({ playingSound: null })
+
   render () {
     return (
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.container}>
           <Text style={styles.comedianText}>{this.comedian}</Text>
           {
-            this.gridProps.map((props, index) =>
-              <Row key={index} squareProps={props} />
-            )
+            this.gridProps.map((gridProps, index) => (
+              <View key={index} style={styles.rowContainer}>
+                { 
+                  gridProps.map((props, index) => {
+                    const onPress = (sound: Audio.Sound) => this.setState({ playingSound: sound })
+                    return <Square key={index} sound={props.sound} text={props.text} onPress={onPress} />
+                  })
+                }
+              </View>
+            ))
           }
+          <PlaybackButtons sound={this.state.playingSound} onPressStop={this.onPressStop} />
         </View>
       </ScrollView>
     );
@@ -37,6 +58,7 @@ export default class SoundGrid extends React.Component<NavigationProps> {
   export interface SquareProps {
     sound: PlaybackSource
     text: String
+    onPress: (sound: Audio.Sound) => void
   }
   
   interface SquareState {
@@ -45,9 +67,13 @@ export default class SoundGrid extends React.Component<NavigationProps> {
   
   class Square extends React.Component<SquareProps, SquareState> {
     sound = new Audio.Sound()
+
+    constructor(props) {
+      super(props)
+      this.state = { played: false }
+    }
   
     componentDidMount() {
-      this.state = { played: false }
       this.loadAudio()
     }
   
@@ -64,7 +90,8 @@ export default class SoundGrid extends React.Component<NavigationProps> {
         this.sound.replayAsync()
       } else {
         this.sound.playAsync()
-        this.state = { played: true }
+        this.setState({ played: true })
+        this.props.onPress(this.sound)
       }
     }
   
@@ -77,28 +104,83 @@ export default class SoundGrid extends React.Component<NavigationProps> {
     }
   }
   
-  interface RowProps {
-    squareProps: SquareProps[]
-  }
-  
-  class Row extends React.Component<RowProps> {
-    render() {
-      return (
-        <View style ={styles.markRowContainer}>
-          {
-            this.props.squareProps.map((props, index) => 
-              <Square key={index} {...props} />
-            )
-          }
-        </View>
-      )
-    }
+  interface PlaybackButtonsProps {
+    sound: Audio.Sound
+    onPressStop: () => void
   }
 
-  class PlaybackButtons extends React.Component {
+  interface PlayBackButtonsState {
+    paused: boolean
+  }
+
+  class PlaybackButtons extends React.Component<PlaybackButtonsProps, PlayBackButtonsState> {
+    constructor(props) {
+      super(props)
+      this.state = { paused: false }
+      this.getAudioLength(props.sound)
+    }
+
+    audioLength = 0
+
+    onPressStop = () => this.props.onPressStop()
+
+    onPressPause = () => {
+      this.props.sound.pauseAsync()
+      this.setState({ paused: true })
+    }
+
+    onPressPlay = () => this.props.sound.playAsync()
+
+    onPressPlayPause = () => {
+      if (this.state.paused) {
+        this.props.sound.playAsync()
+      } else {
+        this.props.sound.pauseAsync()
+      }
+      this.setState({ paused: !this.state.paused })
+    }
+
+    componentDidUpdate(prevProps) {
+      if (prevProps.sound !== this.props.sound) {
+        this.getAudioLength(this.props.sound)
+      }
+    }
+
+    getAudioLength = (sound: Audio.Sound) => {
+      if (!_.isNil(sound)) {
+        sound.getStatusAsync()
+          .then(status => {
+            if (status.isLoaded) {
+              this.audioLength = status.durationMillis
+              console.log(this.audioLength)
+            }
+          })
+          .catch(e => console.warn('Error getting sound status', e))
+      }
+    }
+
     render() {
+      if (this.props.sound === null) {
+        return null
+      }
+
       return (
-        null
+        <View style={styles.playbackContainer}>
+          <View style={styles.playbackButtonsContainer}>
+            <TouchableOpacity onPress={this.props.onPressStop} style={styles.playbackButton}>
+              <Foundation name="stop" color="white" size={50} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.onPressPlayPause} style={styles.playbackButton}>
+              <Ionicons name={this.state.paused ? "md-play" : "md-pause"} color="white" size={50} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.playbackBarContainer}>
+            <View style={styles.circle} />
+            <View style={styles.playbackBar}>
+              <Animated.View style={styles.completedPlaybackBar} />
+            </View>
+          </View>
+        </View>
       )
     }
   }
@@ -111,6 +193,14 @@ export default class SoundGrid extends React.Component<NavigationProps> {
       paddingVertical: 20,
       backgroundColor: tuesdaysBlue
     },
+    playbackButtonsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      paddingBottom: 20
+    },
+    playbackButton: {
+      paddingHorizontal: 15
+    },
     square: {
       width: 160,
       height: 100,
@@ -121,7 +211,7 @@ export default class SoundGrid extends React.Component<NavigationProps> {
       borderColor: 'white',
       borderWidth: 1
     },
-    markRowContainer: {
+    rowContainer: {
       paddingHorizontal: 30,
       paddingBottom: 20,
       flexDirection: 'row',
@@ -135,6 +225,38 @@ export default class SoundGrid extends React.Component<NavigationProps> {
       textAlign: 'center',
       fontSize: 24,
       paddingBottom: 20
+    },
+    playbackContainer: {
+      paddingHorizontal: 20,
+      paddingBottom: 20
+    },
+    playbackBar: {
+      backgroundColor: 'white',
+      height: 6,
+    },
+    completedPlaybackBar: {
+      position: 'absolute',
+      height: 6,
+      top: 0,
+      left: 0,
+      backgroundColor: 'grey'
+    },
+    circle: {
+      height: 20,
+      width: 20  ,
+      borderRadius: 10,
+      backgroundColor: 'grey',
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      zIndex: 5,
+      transform: [
+        { translateX: 5 } // translate with animated value
+      ]
+    },
+    playbackBarContainer: {
+      height: 10,
+      justifyContent: 'center'
     }
   })
   

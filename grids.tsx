@@ -53,8 +53,8 @@ export const markGridProps: SquareProps[][] = [
   ],
   [
     {
-      sound: null,
-      text: 'M6A'
+      sound: require('./assets/sounds/praise_allah.mp3'),
+      text: 'Praise Allah!'
     },
     {
       sound: null,
