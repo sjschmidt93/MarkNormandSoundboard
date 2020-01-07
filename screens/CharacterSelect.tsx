@@ -15,7 +15,8 @@ export default class CharacterSelect extends React.Component<NavigationProps> {
   static navigationOptions = {
     headerStyle: { 
       backgroundColor: tuesdaysBlue
-    }
+    },
+    headerTintColor: 'white'
   }
 
   startScreenSound = this.props.navigation.getParam('sound')

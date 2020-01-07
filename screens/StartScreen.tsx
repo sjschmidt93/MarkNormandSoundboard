@@ -4,27 +4,23 @@ import { tuesdaysBlue, NavigationProps } from "./CharacterSelect"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Audio } from 'expo-av'
 import { Octicons } from '@expo/vector-icons'
+import { observer } from 'mobx-react'
+import { observable } from "mobx"
 
-interface StartScreenState {
-  muted: boolean
-}
-
-export default class StartScreen extends React.Component<NavigationProps, StartScreenState> {
+@observer
+export default class StartScreen extends React.Component<NavigationProps> {
   static navigationOptions = {
     header: null
   }
 
-  constructor(props) {
-    super(props)
-    this.state = { muted: false }
-  }
-
-  componentDidMount() {
-    this.state = { muted: false }
-    this.loadAudio()
-  }
+  @observable
+  muted = false
 
   sound = new Audio.Sound()
+
+  componentDidMount() {
+    this.loadAudio()
+  }
 
   loadAudio = async () => {
     try {
@@ -36,12 +32,11 @@ export default class StartScreen extends React.Component<NavigationProps, StartS
   }
 
   onPressMute = () => {
-    this.setState({ muted: !this.state.muted })
-    this.sound.setIsMutedAsync(!this.state.muted)
+    this.sound.setIsMutedAsync(this.muted)
+    this.muted = !this.muted
   }
 
-  onPressStart = () =>
-    this.props.navigation.navigate('CharacterSelect', { sound: this.sound })
+  onPressStart = () => this.props.navigation.navigate('CharacterSelect', { sound: this.sound })
 
   render() {
     return (
@@ -53,7 +48,7 @@ export default class StartScreen extends React.Component<NavigationProps, StartS
           </TouchableOpacity>
         </View>
         <TouchableOpacity style={styles.muteButtonContainer} onPress={this.onPressMute}>
-          <Octicons name={this.state.muted ? "mute" : "unmute"} size={25} color="white" />
+          <Octicons name={this.muted ? "mute" : "unmute"} size={25} color="white" />
         </TouchableOpacity>
       </View>
     )
@@ -63,8 +58,7 @@ export default class StartScreen extends React.Component<NavigationProps, StartS
 const styles = StyleSheet.create({
   outerContainer: {
     backgroundColor: tuesdaysBlue,
-    flex: 1,
-    //justifyContent: 'space-around',
+    flex: 1
   },
   container: {
     justifyContent: 'space-around',

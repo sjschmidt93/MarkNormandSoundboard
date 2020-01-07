@@ -13,8 +13,8 @@ export const markGridProps: SquareProps[][] = [
   ],
   [
     {
-      sound: null,
-      text: 'M2A'
+      sound: require('./assets/sounds/theme_song.mp3'),
+      text: 'theme test'
     },
     {
       sound: null,
@@ -41,26 +41,26 @@ export const markGridProps: SquareProps[][] = [
       text: 'M4B'
     }
   ],
-  [
-    {
-      sound: null,
-      text: 'M5A'
-    },
-    {
-      sound: null,
-      text: 'M5B'
-    }
-  ],
-  [
-    {
-      sound: require('./assets/sounds/praise_allah.mp3'),
-      text: 'Praise Allah!'
-    },
-    {
-      sound: null,
-      text: 'M6B'
-    }
-  ]
+  // [
+  //   {
+  //     sound: null,
+  //     text: 'M5A'
+  //   },
+  //   {
+  //     sound: null,
+  //     text: 'M5B'
+  //   }
+  // ],
+  // [
+  //   {
+  //     sound: require('./assets/sounds/praise_allah.mp3'),
+  //     text: 'Praise Allah!'
+  //   },
+  //   {
+  //     sound: null,
+  //     text: 'M6B'
+  //   }
+  // ]
 ]
 
 export const joeGridProps: SquareProps[][] = [

@@ -1,27 +1,25 @@
 import React from "react"
-import { ScrollView, View, TouchableOpacity, StyleSheet, Text, Animated } from "react-native"
+import { ScrollView, View, TouchableOpacity, StyleSheet, Text, Animated, Dimensions } from "react-native"
 import { NavigationProps, tuesdaysBlue } from "./CharacterSelect"
 import { PlaybackSource } from "expo-av/build/AV"
 import { Audio } from 'expo-av'
 import { markGridProps, joeGridProps } from "../grids"
 import { Foundation, Ionicons } from '@expo/vector-icons'
 import _ from "lodash"
+import { observer } from 'mobx-react'
+import { observable, reaction, computed } from 'mobx'
 
-interface SoundGridState {
-  playingSound: Audio.Sound
-}
-
-export default class SoundGrid extends React.Component<NavigationProps, SoundGridState> {
+@observer
+export default class SoundGrid extends React.Component<NavigationProps> {
   static navigationOptions = {
     headerStyle: { 
       backgroundColor: tuesdaysBlue
-    }
+    },
+    headerTintColor: 'white'
   }
 
-  constructor(props) {
-    super(props)
-    this.state = { playingSound: null }
-  }
+  @observable
+  playingSound = null
 
   comedian: string = this.props.navigation.getParam('comedian')
 
@@ -29,7 +27,7 @@ export default class SoundGrid extends React.Component<NavigationProps, SoundGri
     ? joeGridProps
     : markGridProps
 
-  onPressStop = () => this.setState({ playingSound: null })
+  onPressStop = () => this.playingSound = null
 
   render () {
     return (
@@ -41,14 +39,14 @@ export default class SoundGrid extends React.Component<NavigationProps, SoundGri
               <View key={index} style={styles.rowContainer}>
                 { 
                   gridProps.map((props, index) => {
-                    const onPress = (sound: Audio.Sound) => this.setState({ playingSound: sound })
+                    const onPress = (sound: Audio.Sound) => this.playingSound = sound
                     return <Square key={index} sound={props.sound} text={props.text} onPress={onPress} />
                   })
                 }
               </View>
             ))
           }
-          <PlaybackButtons sound={this.state.playingSound} onPressStop={this.onPressStop} />
+          <PlaybackButtons sound={this.playingSound} onPressStop={this.onPressStop} />
         </View>
       </ScrollView>
     );
@@ -61,17 +59,9 @@ export default class SoundGrid extends React.Component<NavigationProps, SoundGri
     onPress: (sound: Audio.Sound) => void
   }
   
-  interface SquareState {
-    played: boolean
-  }
-  
-  class Square extends React.Component<SquareProps, SquareState> {
+  class Square extends React.Component<SquareProps> {
     sound = new Audio.Sound()
-
-    constructor(props) {
-      super(props)
-      this.state = { played: false }
-    }
+    played = false
   
     componentDidMount() {
       this.loadAudio()
@@ -86,11 +76,11 @@ export default class SoundGrid extends React.Component<NavigationProps, SoundGri
     }
   
     onPress = () => {
-      if (this.state.played) {
+      if (this.played) {
         this.sound.replayAsync()
       } else {
         this.sound.playAsync()
-        this.setState({ played: true })
+        this.played = true
         this.props.onPress(this.sound)
       }
     }
@@ -109,41 +99,83 @@ export default class SoundGrid extends React.Component<NavigationProps, SoundGri
     onPressStop: () => void
   }
 
-  interface PlayBackButtonsState {
-    paused: boolean
-  }
+  const CIRCLE_RADIUS = 10
 
-  class PlaybackButtons extends React.Component<PlaybackButtonsProps, PlayBackButtonsState> {
-    constructor(props) {
-      super(props)
-      this.state = { paused: false }
-      this.getAudioLength(props.sound)
-    }
+  @observer
+  class PlaybackButtons extends React.Component<PlaybackButtonsProps> {
+    @observable
+    paused = false
 
+    @observable
+    finished = false
+
+    @observable
     audioLength = 0
 
-    onPressStop = () => this.props.onPressStop()
+    @observable
+    circleX = new Animated.Value(10)
+
+    @computed
+    get showingPlayButton() {
+      return this.paused || this.finished
+    }
+
+    reaction = reaction(
+      () => this.props.sound,
+      sound => this.getAudioLength(sound)
+    )
+
+    componentDidMount() {
+      this.getAudioLength(this.props.sound)
+    }
+
+    onPressStop = () => {
+      this.props.onPressStop()
+      this.props.sound.stopAsync()
+      this.circleX.setValue(0)
+    }
 
     onPressPause = () => {
       this.props.sound.pauseAsync()
-      this.setState({ paused: true })
+      this.paused = true
+      this.circleX.stopAnimation(value => this.circleX.setValue(value))
     }
 
-    onPressPlay = () => this.props.sound.playAsync()
+    onPressPlay = () => {
+      if (this.paused) {
+
+      } else if (this.finished) {
+        this.finished = false
+        this.props.sound.replayAsync()
+        this.animateBar()
+      } else {
+        this.circleX.setValue(0)
+        this.props.sound.playAsync()
+      }
+    }
 
     onPressPlayPause = () => {
-      if (this.state.paused) {
-        this.props.sound.playAsync()
+      if (this.showingPlayButton) {
+        this.onPressPlay()
       } else {
-        this.props.sound.pauseAsync()
+        this.onPressPause()
       }
-      this.setState({ paused: !this.state.paused })
+      //this.paused = !this.paused
     }
 
-    componentDidUpdate(prevProps) {
-      if (prevProps.sound !== this.props.sound) {
-        this.getAudioLength(this.props.sound)
-      }
+    animateBar = () => {
+      Animated.timing(
+        this.circleX,
+        {
+          toValue: Dimensions.get('screen').width - 40,
+          duration: this.audioLength
+        }
+      ).start()
+      setInterval(() => {
+        this.circleX.setValue(0)
+        this.finished = true // it isn't really paused, so use a different var here
+        this.paused = false
+      }, this.audioLength)
     }
 
     getAudioLength = (sound: Audio.Sound) => {
@@ -152,7 +184,7 @@ export default class SoundGrid extends React.Component<NavigationProps, SoundGri
           .then(status => {
             if (status.isLoaded) {
               this.audioLength = status.durationMillis
-              console.log(this.audioLength)
+              this.animateBar()
             }
           })
           .catch(e => console.warn('Error getting sound status', e))
@@ -171,13 +203,13 @@ export default class SoundGrid extends React.Component<NavigationProps, SoundGri
               <Foundation name="stop" color="white" size={50} />
             </TouchableOpacity>
             <TouchableOpacity onPress={this.onPressPlayPause} style={styles.playbackButton}>
-              <Ionicons name={this.state.paused ? "md-play" : "md-pause"} color="white" size={50} />
+              <Ionicons name={this.showingPlayButton ? "md-play" : "md-pause"} color="white" size={50} />
             </TouchableOpacity>
           </View>
           <View style={styles.playbackBarContainer}>
-            <View style={styles.circle} />
+            <Animated.View style={[styles.circle, { transform: [{ translateX: this.circleX }] }]} />
             <View style={styles.playbackBar}>
-              <Animated.View style={styles.completedPlaybackBar} />
+              <Animated.View style={[styles.completedPlaybackBar, { width: Animated.add(this.circleX, CIRCLE_RADIUS) }]} />
             </View>
           </View>
         </View>
@@ -242,17 +274,14 @@ export default class SoundGrid extends React.Component<NavigationProps, SoundGri
       backgroundColor: 'grey'
     },
     circle: {
-      height: 20,
-      width: 20  ,
-      borderRadius: 10,
+      height: CIRCLE_RADIUS * 2,
+      width: CIRCLE_RADIUS * 2  ,
+      borderRadius: CIRCLE_RADIUS,
       backgroundColor: 'grey',
       position: 'absolute',
       left: 0,
       top: 0,
-      zIndex: 5,
-      transform: [
-        { translateX: 5 } // translate with animated value
-      ]
+      zIndex: 5
     },
     playbackBarContainer: {
       height: 10,
