@@ -78,6 +78,26 @@ export default class CharacterSelect extends React.Component<NavigationProps> {
   }
 }
 
+interface SocialRowProps {
+  twitter: string
+  facebook: string
+  soundcloud: string
+  youtube: string
+}
+
+export class SocialRow extends React.Component<SocialRowProps> {
+  render() {
+    return (
+      <View style={styles.socialContainer}>
+        <SocialIcon type="twitter"    onPress={() => Linking.openURL('https://twitter.com/tuesdaystories?lang=en')} />
+        <SocialIcon type="facebook"   onPress={() => Linking.openURL('https://www.facebook.com/TuesdayStories/')} />
+        <SocialIcon type="soundcloud" onPress={() => Linking.openURL('https://soundcloud.com/tuesdays_with_stories')} />
+        <SocialIcon type="youtube"    onPress={() => Linking.openURL('https://www.youtube.com/channel/UCsE74YJvPJpaquzTPMO8hAA')} />
+      </View>
+    )
+  }
+}
+
 const styles = StyleSheet.create({
   container: {
     paddingTop: 20,

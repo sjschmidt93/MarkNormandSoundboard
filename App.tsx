@@ -4,6 +4,8 @@ import { createStackNavigator } from 'react-navigation-stack'
 import CharacterSelect from './screens/CharacterSelect'
 import SoundGrid from './screens/SoundGrid'
 import StartScreen from './screens/StartScreen'
+import { Provider } from 'mobx-react'
+import soundStore from './SoundStore'
 
 const AppNavigator = createStackNavigator(
   {
@@ -20,6 +22,10 @@ const AppContainer = createAppContainer(AppNavigator)
 
 export default class App extends React.Component {
   render() {
-    return <AppContainer />;
+    return (
+      <Provider soundStore={soundStore}>
+        <AppContainer />
+      </Provider>
+    )
   }
 }
