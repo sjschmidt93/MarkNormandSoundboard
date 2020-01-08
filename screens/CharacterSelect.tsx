@@ -4,6 +4,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-navigation'
 import { SocialIcon } from 'react-native-elements'
 import { Audio } from 'expo-av'
+import { Comedian } from './SoundGrid'
+import { inject, observer } from 'mobx-react'
+import { Octicons } from '@expo/vector-icons'
 
 export const tuesdaysBlue = '#032D46'
 
@@ -11,6 +14,8 @@ export interface NavigationProps {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>
 }
 
+@inject('soundStore')
+@observer
 export default class CharacterSelect extends React.Component<NavigationProps> {
   static navigationOptions = {
     headerStyle: { 
@@ -38,20 +43,26 @@ export default class CharacterSelect extends React.Component<NavigationProps> {
   }
 
   onPressMark = () => {
-    this.props.navigation.navigate('SoundGrid', { comedian: 'Mark Normand'})
-    this.markAudio.playAsync()
-    this.startScreenSound.stopAsync()
+    this.props.navigation.navigate('SoundGrid', { comedian: Comedian.MARK})
+    this.props.soundStore.sound.stopAsync()
   }
 
   onPressJoe = () => {
-    this.props.navigation.navigate('SoundGrid', { comedian: 'Joe List' })
+    this.props.navigation.navigate('SoundGrid', { comedian: Comedian.JOE })
+    this.props.soundStore.sound.stopAsync()
   }
 
   render() {
       return (
         <View style={styles.container}>
-          <View>
+          <View style={{ flex: 1 }}>
            <Text style={styles.chooseText}>Choose your Comedian</Text>
+           <View style={styles.socialContainer}>
+              <SocialIcon type="twitter"    onPress={() => Linking.openURL('https://twitter.com/tuesdaystories?lang=en')} />
+              <SocialIcon type="facebook"   onPress={() => Linking.openURL('https://www.facebook.com/TuesdayStories/')} />
+              <SocialIcon type="soundcloud" onPress={() => Linking.openURL('https://soundcloud.com/tuesdays_with_stories')} />
+              <SocialIcon type="youtube"    onPress={() => Linking.openURL('https://www.youtube.com/channel/UCsE74YJvPJpaquzTPMO8hAA')} />
+            </View>
             <View style={styles.comedianButtonsRowContainer}>
               <View style={styles.comedianButtonContainer}>
                 <TouchableOpacity onPress={this.onPressMark}>
@@ -67,33 +78,20 @@ export default class CharacterSelect extends React.Component<NavigationProps> {
               </View>
             </View>
           </View>
-          <View style={styles.socialContainer}>
-            <SocialIcon type="twitter"    onPress={() => Linking.openURL('https://twitter.com/tuesdaystories?lang=en')} />
-            <SocialIcon type="facebook"   onPress={() => Linking.openURL('https://www.facebook.com/TuesdayStories/')} />
-            <SocialIcon type="soundcloud" onPress={() => Linking.openURL('https://soundcloud.com/tuesdays_with_stories')} />
-            <SocialIcon type="youtube"    onPress={() => Linking.openURL('https://www.youtube.com/channel/UCsE74YJvPJpaquzTPMO8hAA')} />
-          </View>
+          <MuteButton />
         </View>
       )
   }
 }
 
-interface SocialRowProps {
-  twitter: string
-  facebook: string
-  soundcloud: string
-  youtube: string
-}
-
-export class SocialRow extends React.Component<SocialRowProps> {
+@inject('soundStore')
+@observer
+export class MuteButton extends React.Component {
   render() {
     return (
-      <View style={styles.socialContainer}>
-        <SocialIcon type="twitter"    onPress={() => Linking.openURL('https://twitter.com/tuesdaystories?lang=en')} />
-        <SocialIcon type="facebook"   onPress={() => Linking.openURL('https://www.facebook.com/TuesdayStories/')} />
-        <SocialIcon type="soundcloud" onPress={() => Linking.openURL('https://soundcloud.com/tuesdays_with_stories')} />
-        <SocialIcon type="youtube"    onPress={() => Linking.openURL('https://www.youtube.com/channel/UCsE74YJvPJpaquzTPMO8hAA')} />
-      </View>
+      <TouchableOpacity style={styles.muteButtonContainer} onPress={this.props.soundStore.toggleMute}>
+        <Octicons name={this.props.soundStore.muted ? "mute" : "unmute"} size={25} color="white" />
+      </TouchableOpacity>
     )
   }
 }
@@ -138,9 +136,13 @@ const styles = StyleSheet.create({
   },
   socialContainer: {
     alignItems: 'center',
-    paddingBottom: 20,
+    paddingVertical: 20,
     flexDirection: 'row',
     paddingHorizontal: 30,
     justifyContent: 'space-between'
+  },
+  muteButtonContainer: {
+    padding: 10,
+    alignSelf: 'flex-end'
   }
 })

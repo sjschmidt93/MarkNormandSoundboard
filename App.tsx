@@ -16,7 +16,7 @@ const AppNavigator = createStackNavigator(
   {
     initialRouteName: 'StartScreen'
   }
-);
+)
 
 const AppContainer = createAppContainer(AppNavigator)
 

@@ -1,5 +1,5 @@
-import { observable } from "mobx";
-import { Audio } from "expo-av";
+import { observable, action } from "mobx"
+import { Audio } from "expo-av"
 
 export class SoundStore {
   @observable
@@ -11,8 +11,16 @@ export class SoundStore {
   @observable
   playing = false
 
-  soundAssignmentCall: () => void = null
+  @observable
+  muted = false
 
+  @action
+  toggleMute = () => {
+    this.muted = !this.muted
+    this.sound.setIsMutedAsync(this.muted)
+  }
+
+  //soundAssignmentCall: () => void = null
 }
 
 const soundStore = new SoundStore()

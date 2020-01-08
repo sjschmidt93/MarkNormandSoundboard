@@ -1,6 +1,6 @@
 import React from "react"
 import { ScrollView, View, TouchableOpacity, StyleSheet, Text, Animated, Dimensions } from "react-native"
-import { NavigationProps, tuesdaysBlue, SocialRow } from "./CharacterSelect"
+import { NavigationProps, tuesdaysBlue } from "./CharacterSelect"
 import { PlaybackSource } from "expo-av/build/AV"
 import { Audio } from 'expo-av'
 import { markGridProps, joeGridProps } from "../grids"
@@ -9,9 +9,15 @@ import _ from "lodash"
 import { observer, inject } from 'mobx-react'
 import { observable, reaction, computed } from 'mobx'
 import { SoundStore } from "../SoundStore"
+import SocialRow from "../components/SocialRow"
 
 export interface SoundStoreProp {
   soundStore: SoundStore
+}
+
+export enum Comedian {
+  JOE = 'Joe',
+  MARK = 'Mark'
 }
 
 @inject('soundStore')
@@ -24,14 +30,15 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
     headerTintColor: 'white'
   }
 
-  @observable
-  playingSound = null
+  @computed
+  get comedian() {
+    return this.props.navigation.getParam('comedian')
+  }
 
-  comedian: string = this.props.navigation.getParam('comedian')
-
-  gridProps = this.comedian === 'Joe List'
-    ? joeGridProps
-    : markGridProps
+  @computed
+  get gridProps() {
+    return this.comedian === Comedian.MARK ? markGridProps : joeGridProps
+  }
 
   onPressStop = () => this.props.soundStore.sound = null
 
@@ -40,7 +47,7 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.container}>
           <Text style={styles.comedianText}>{this.comedian}</Text>
-          <SocialRow />
+          <SocialRow comedian={this.comedian} />
           {
             this.gridProps.map((gridProps, index) => (
               <View key={index} style={styles.rowContainer}>
@@ -55,7 +62,7 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
           <PlaybackButtons />
         </View>
       </ScrollView>
-    );
+    )
   }
 }
   
@@ -168,7 +175,6 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
       } else {
         this.onPressPause()
       }
-      //this.paused = !this.paused
     }
 
     animateBar = () => {
@@ -182,7 +188,6 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
       ).start()
 
       setTimeout(() => {
-        //this.circleX.setValue(0)
         this.finished = true // it isn't really paused, so use a different var here
         this.paused = false
       }, this.props.soundStore.duration)
@@ -217,11 +222,13 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
 
   const styles = StyleSheet.create({
     container: {
-      paddingBottom: 20
+      paddingBottom: 20,
+      flex: 1
     },
     scrollContainer: {
       paddingVertical: 20,
-      backgroundColor: tuesdaysBlue
+      backgroundColor: tuesdaysBlue,
+      flex: 1
     },
     playbackButtonsContainer: {
       flexDirection: 'row',
