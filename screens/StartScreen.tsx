@@ -4,10 +4,11 @@ import { tuesdaysBlue, NavigationProps, MuteButton } from "./CharacterSelect"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import { Audio } from 'expo-av'
 import { observer, inject } from 'mobx-react'
+import { SoundStoreProp } from "./SoundGrid"
 
 @inject('soundStore')
 @observer
-export default class StartScreen extends React.Component<NavigationProps> {
+export default class StartScreen extends React.Component<NavigationProps & SoundStoreProp> {
   static navigationOptions = {
     header: null
   }
@@ -21,8 +22,7 @@ export default class StartScreen extends React.Component<NavigationProps> {
   loadAudio = async () => {
     try {
       await this.sound.loadAsync(require('./../assets/sounds/theme_song.mp3'))
-      await this.sound.playAsync()
-      this.props.soundStore.sound = this.sound
+      this.props.soundStore.playAndSet(this.sound)
     } catch (error) {
       console.warn('Failed to to load theme song')
     }

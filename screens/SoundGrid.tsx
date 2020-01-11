@@ -88,7 +88,7 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
         this.sound.getStatusAsync()
           .then(status => {
             if (status.isLoaded) {
-              this.duration = status.playableDurationMillis
+              this.duration = status.durationMillis
             }
           })
       } catch (error) {
@@ -97,16 +97,15 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
     }
   
     onPress = () => {
-      if (!_.isNil(this.props.soundStore.sound)) {
-        this.props.soundStore.sound.stopAsync()
-      }
+      this.props.soundStore.stop()
 
       this.props.soundStore.duration = this.duration
-      this.props.soundStore.sound = this.sound
+
+      this.props.soundStore.animateBar()
       if (this.played) {
-        this.sound.replayAsync()
+        this.props.soundStore.replay(this.sound)
       } else {
-        this.sound.playAsync()
+        this.props.soundStore.playAndSet(this.sound)
         this.played = true
       }
     }
@@ -139,19 +138,23 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
       () => this.animateBar()
     )
 
+    componentDidMount() {
+      this.props.soundStore.animateBar = this.animateBar
+    }
+
     @computed
     get showingPlayButton() {
       return this.paused || this.finished
     }
 
     onPressStop = () => {
-      this.props.soundStore.sound.stopAsync()
+      this.props.soundStore.stop()
       this.circleX.setValue(0)
-      this.props.soundStore.sound = null
+      this.props.soundStore.stop()
     }
 
     onPressPause = () => {
-      this.props.soundStore.sound.pauseAsync()
+      this.props.soundStore.pause()
       this.paused = true
       this.circleX.stopAnimation(value => this.circleX.setValue(value))
     }
@@ -195,7 +198,7 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
     }
 
     render() {
-      if (this.props.soundStore.sound === null) {
+      if (_.isNil(this.props.soundStore.sound)) {
         return null
       }
 

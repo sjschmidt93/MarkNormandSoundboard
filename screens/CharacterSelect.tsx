@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-navigation'
 import { SocialIcon } from 'react-native-elements'
 import { Audio } from 'expo-av'
-import { Comedian } from './SoundGrid'
+import { Comedian, SoundStoreProp } from './SoundGrid'
 import { inject, observer } from 'mobx-react'
 import { Octicons } from '@expo/vector-icons'
 
@@ -16,7 +16,7 @@ export interface NavigationProps {
 
 @inject('soundStore')
 @observer
-export default class CharacterSelect extends React.Component<NavigationProps> {
+export default class CharacterSelect extends React.Component<NavigationProps & SoundStoreProp> {
   static navigationOptions = {
     headerStyle: { 
       backgroundColor: tuesdaysBlue
@@ -44,12 +44,12 @@ export default class CharacterSelect extends React.Component<NavigationProps> {
 
   onPressMark = () => {
     this.props.navigation.navigate('SoundGrid', { comedian: Comedian.MARK})
-    this.props.soundStore.sound.stopAsync()
+    this.props.soundStore.stop()
   }
 
   onPressJoe = () => {
     this.props.navigation.navigate('SoundGrid', { comedian: Comedian.JOE })
-    this.props.soundStore.sound.stopAsync()
+    this.props.soundStore.stop()
   }
 
   render() {
@@ -86,11 +86,11 @@ export default class CharacterSelect extends React.Component<NavigationProps> {
 
 @inject('soundStore')
 @observer
-export class MuteButton extends React.Component {
+export class MuteButton extends React.Component<SoundStoreProp> {
   render() {
     return (
       <TouchableOpacity style={styles.muteButtonContainer} onPress={this.props.soundStore.toggleMute}>
-        <Octicons name={this.props.soundStore.muted ? "mute" : "unmute"} size={25} color="white" />
+        <Octicons name={this.props.soundStore.isMuted ? "mute" : "unmute"} size={25} color="white" />
       </TouchableOpacity>
     )
   }
