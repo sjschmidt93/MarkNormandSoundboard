@@ -43,7 +43,7 @@ export default class CharacterSelect extends React.Component<NavigationProps & S
   }
 
   onPressMark = () => {
-    this.props.navigation.navigate('SoundGrid', { comedian: Comedian.MARK})
+    this.props.navigation.navigate('SoundGrid', { comedian: Comedian.MARK })
     this.props.soundStore.stop()
   }
 

@@ -22,7 +22,7 @@ export default class StartScreen extends React.Component<NavigationProps & Sound
   loadAudio = async () => {
     try {
       await this.sound.loadAsync(require('./../assets/sounds/theme_song.mp3'))
-      this.props.soundStore.playAndSet(this.sound)
+      this.props.soundStore.play(this.sound)
     } catch (error) {
       console.warn('Failed to to load theme song')
     }
