@@ -1,6 +1,7 @@
 import { observable, action, computed } from "mobx"
 import { Audio } from "expo-av"
 import _ from "lodash"
+import { PlaybackStatus } from "expo-av/build/AV"
 
 export class SoundStore {
   @observable
@@ -31,8 +32,10 @@ export class SoundStore {
     }
   }
 
-  pause = () => {
+  pause = (callback: (status: PlaybackStatus) => void) => {
     this._sound.pauseAsync()
+      .then(callback)
+      .catch(e => console.warn('Error pausing sound'))
   }
 
   play = (sound: Audio.Sound = null) => {

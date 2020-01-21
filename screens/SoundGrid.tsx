@@ -157,11 +157,14 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
     }
 
     onPressPause = () => {
-      this.props.soundStore.pause()
-      this.paused = true
-      this.circleX.stopAnimation(value => {
-        this.circleX.setValue(value)
-        this.animationStopValue = value
+      this.props.soundStore.pause(status => {
+        if (status.isLoaded) {
+          this.paused = true
+          this.circleX.stopAnimation(value => {
+            this.circleX.setValue(value)
+            this.animationStopValue = value
+          })
+        }
       })
     }
 
