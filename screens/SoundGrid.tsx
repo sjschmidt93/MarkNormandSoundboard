@@ -150,7 +150,6 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
     onPressStop = () => {
       this.props.soundStore.stop()
       this.circleX.setValue(0)
-      this.props.soundStore.stop()
     }
 
     onPressPause = () => {
@@ -172,8 +171,7 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
 
     replay = () => {
       this.finished = false
-      this.props.soundStore.replay()
-      this.animateBar()
+      this.props.soundStore.replay(null, () => this.finished = false)
     }
 
     unpause = () => {
@@ -225,9 +223,8 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
           </View>
           <View style={styles.playbackBarContainer}>
             <Animated.View style={[styles.circle, { transform: [{ translateX: this.circleX }] }]} />
-            <View style={styles.playbackBar}>
-              <Animated.View style={[styles.completedPlaybackBar, { width: Animated.add(this.circleX, CIRCLE_RADIUS) }]} />
-            </View>
+            <View style={styles.playbackBar} />
+            <Animated.View style={[styles.completedPlaybackBar, { width: Animated.add(this.circleX, CIRCLE_RADIUS) }]} />
           </View>
         </View>
       )
@@ -288,7 +285,7 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
     },
     completedPlaybackBar: {
       position: 'absolute',
-      height: 6,
+      height: 10,
       top: 0,
       left: 0,
       backgroundColor: 'grey',
@@ -301,7 +298,6 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
       backgroundColor: 'grey',
       position: 'absolute',
       left: 0,
-      top: 0,
       zIndex: 5
     },
     playbackBarContainer: {

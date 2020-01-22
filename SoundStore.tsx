@@ -26,12 +26,19 @@ export class SoundStore {
   }
 
   @action
-  replay = (sound: Audio.Sound = null) => {
+  replay = (sound: Audio.Sound = null, callback: () => void = () => null) => {
     if (!_.isNil(sound)) {
       this._sound = sound
     }
 
     this._sound.replayAsync()
+      .then(status => {
+        if (status.isLoaded) {
+          this.animateBar()
+          callback()
+        }
+      })
+      .catch(e => console.warn('Error replaying sound', e))
   }
 
   @action
