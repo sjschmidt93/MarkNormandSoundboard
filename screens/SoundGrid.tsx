@@ -40,7 +40,7 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
     return this.comedian === Comedian.MARK ? markGridProps : joeGridProps
   }
 
-  onPressStop = () => this.props.soundStore.sound = null
+  onPressStop = () => this.props.soundStore.stop()
 
   render () {
     return (
@@ -126,9 +126,6 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
   @observer
   class PlaybackButtons extends React.Component<SoundStoreProp> {
     @observable
-    paused = false
-
-    @observable
     finished = false
 
     animationStopValue = -1
@@ -136,10 +133,10 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
     @observable
     circleX = new Animated.Value(0)
 
-    reaction = reaction(
-      () => this.props.soundStore.sound,
-      () => this.animateBar()
-    )
+    // reaction = reaction(
+    //   () => this.props.soundStore.sound,
+    //   () => this.animateBar()
+    // )
 
     componentDidMount() {
       this.props.soundStore.animateBar = this.animateBar
@@ -147,7 +144,7 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
 
     @computed
     get showingPlayButton() {
-      return this.paused || this.finished
+      return this.props.soundStore.isPaused || this.finished
     }
 
     onPressStop = () => {
@@ -157,19 +154,16 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
     }
 
     onPressPause = () => {
-      this.props.soundStore.pause(status => {
-        if (status.isLoaded) {
-          this.paused = true
-          this.circleX.stopAnimation(value => {
-            this.circleX.setValue(value)
-            this.animationStopValue = value
-          })
-        }
+      this.props.soundStore.pause(() => {
+        this.circleX.stopAnimation(value => {
+          this.circleX.setValue(value)
+          this.animationStopValue = value
+        })
       })
     }
 
     onPressPlay = () => {
-      if (this.paused) {
+      if (this.props.soundStore.isPaused) {
         this.unpause()
       } else {
         this.replay()
@@ -178,21 +172,20 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
 
     replay = () => {
       this.finished = false
-      this.props.soundStore.sound.replayAsync()
+      this.props.soundStore.replay()
       this.animateBar()
     }
 
     unpause = () => {
-      this.props.soundStore.play()
-      this.paused = false
-      console.log(this.animationStopValue)
-      Animated.timing(
-        this.circleX,
-        {
-          toValue: ANIMATION_END_VALUE,
-          duration: this.props.soundStore.duration * (1 - this.animationStopValue / ANIMATION_END_VALUE)
-        }
-      ).start(result => this.finished = result.finished)
+      this.props.soundStore.unpause(() => {
+        Animated.timing(
+          this.circleX,
+          {
+            toValue: ANIMATION_END_VALUE,
+            duration: this.props.soundStore.duration * (1 - this.animationStopValue / ANIMATION_END_VALUE)
+          }
+        ).start(result => this.finished = result.finished)
+      })
     }
 
     onPressPlayPause = () => {
@@ -213,11 +206,10 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
           duration: this.props.soundStore.duration
         }
       ).start(result => this.finished = result.finished)
-
     }
 
     render() {
-      if (_.isNil(this.props.soundStore.sound)) {
+      if (this.props.soundStore.isSoundNil) {
         return null
       }
 
