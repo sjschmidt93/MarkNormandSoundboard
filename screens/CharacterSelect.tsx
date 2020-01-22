@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, Linking } from 'react-native'
+import { View, Text, StyleSheet, Image, Linking, StyleProp } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-navigation'
 import { SocialIcon } from 'react-native-elements'
@@ -53,44 +53,57 @@ export default class CharacterSelect extends React.Component<NavigationProps & S
   }
 
   render() {
-      return (
-        <View style={styles.container}>
-          <View style={{ flex: 1 }}>
-           <Text style={styles.chooseText}>Choose your Comedian</Text>
-           <View style={styles.socialContainer}>
-              <SocialIcon type="twitter"    onPress={() => Linking.openURL('https://twitter.com/tuesdaystories?lang=en')} />
-              <SocialIcon type="facebook"   onPress={() => Linking.openURL('https://www.facebook.com/TuesdayStories/')} />
-              <SocialIcon type="soundcloud" onPress={() => Linking.openURL('https://soundcloud.com/tuesdays_with_stories')} />
-              <SocialIcon type="youtube"    onPress={() => Linking.openURL('https://www.youtube.com/channel/UCsE74YJvPJpaquzTPMO8hAA')} />
+    return (
+      <View style={styles.container}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.chooseText}>Choose your Comedian</Text>
+          <View style={styles.socialContainer}>
+            <SocialIcon type="twitter"    onPress={() => Linking.openURL('https://twitter.com/tuesdaystories?lang=en')} />
+            <SocialIcon type="facebook"   onPress={() => Linking.openURL('https://www.facebook.com/TuesdayStories/')} />
+            <SocialIcon type="soundcloud" onPress={() => Linking.openURL('https://soundcloud.com/tuesdays_with_stories')} />
+            <SocialIcon type="youtube"    onPress={() => Linking.openURL('https://www.youtube.com/channel/UCsE74YJvPJpaquzTPMO8hAA')} />
+          </View>
+          <View style={styles.comedianButtonsRowContainer}>
+            <View style={styles.comedianButtonContainer}>
+              <TouchableOpacity onPress={this.onPressMark}>
+                <Image source={require('./../assets/images/mark_select_screen.jpg')} style={styles.comedianButton} />
+              </TouchableOpacity>
+              <Text style={styles.comedianText}>Mark Normand</Text>
             </View>
-            <View style={styles.comedianButtonsRowContainer}>
-              <View style={styles.comedianButtonContainer}>
-                <TouchableOpacity onPress={this.onPressMark}>
-                  <Image source={require('./../assets/images/mark_select_screen.jpg')} style={styles.comedianButton} />
-                </TouchableOpacity>
-                <Text style={styles.comedianText}>Mark Normand</Text>
-              </View>
-              <View style={styles.comedianButtonContainer}>
-                <TouchableOpacity onPress={this.onPressJoe}>
-                  <Image source={require('./../assets/images/joe_select_screen.jpg')} style={styles.comedianButton} />
-                </TouchableOpacity>
-                <Text style={styles.comedianText}>Joe List</Text>
-              </View>
+            <View style={styles.comedianButtonContainer}>
+              <TouchableOpacity onPress={this.onPressJoe}>
+                <Image source={require('./../assets/images/joe_select_screen.jpg')} style={styles.comedianButton} />
+              </TouchableOpacity>
+              <Text style={styles.comedianText}>Joe List</Text>
             </View>
           </View>
-          <MuteButton />
         </View>
-      )
+        <MuteButton />
+      </View>
+    )
   }
+}
+
+interface MuteButtonProps {
+  size?: number
+  containerStyle?: StyleProp<View>
 }
 
 @inject('soundStore')
 @observer
-export class MuteButton extends React.Component<SoundStoreProp> {
+export class MuteButton extends React.Component<SoundStoreProp & MuteButtonProps> {
+  static defaultProps = {
+    size: 25,
+    containerStyle: {
+      alignSelf: 'flex-end',
+      padding: 10
+    }
+  }
+
   render() {
     return (
-      <TouchableOpacity style={styles.muteButtonContainer} onPress={this.props.soundStore.toggleMute}>
-        <Octicons name={this.props.soundStore.isMuted ? "mute" : "unmute"} size={25} color="white" />
+      <TouchableOpacity style={this.props.containerStyle} onPress={this.props.soundStore.toggleMute}>
+        <Octicons name={this.props.soundStore.isMuted ? "mute" : "unmute"} size={this.props.size} color="white" />
       </TouchableOpacity>
     )
   }
@@ -140,9 +153,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 30,
     justifyContent: 'space-between'
-  },
-  muteButtonContainer: {
-    padding: 10,
-    alignSelf: 'flex-end'
   }
 })

@@ -1,6 +1,6 @@
 import React from "react"
 import { ScrollView, View, TouchableOpacity, StyleSheet, Text, Animated, Dimensions } from "react-native"
-import { NavigationProps, tuesdaysBlue } from "./CharacterSelect"
+import { NavigationProps, tuesdaysBlue, MuteButton } from "./CharacterSelect"
 import { PlaybackSource } from "expo-av/build/AV"
 import { Audio } from 'expo-av'
 import { markGridProps, joeGridProps } from "../grids"
@@ -127,6 +127,7 @@ const CIRCLE_RADIUS = 10
 const SCREEN_WIDTH = Dimensions.get('screen').width
 const ANIMATION_END_VALUE = SCREEN_WIDTH - 100 - CIRCLE_RADIUS
 const PLAYBACK_BUTTONS_HEIGHT = 100
+const PLAYBACK_BUTTON_SIZE = 30
 
 @inject('soundStore')
 @observer
@@ -215,11 +216,12 @@ class PlaybackButtons extends React.Component<SoundStoreProp> {
     return (
       <View style={styles.playbackContainer}>
         <View style={styles.playbackButtonsContainer}>
+          <MuteButton containerStyle={styles.playbackButton} size={PLAYBACK_BUTTON_SIZE} />
           <TouchableOpacity onPress={this.onPressStop} style={styles.playbackButton}>
-            <Foundation name="stop" color="white" size={35} />
+            <Foundation name="stop" color="white" size={PLAYBACK_BUTTON_SIZE} />
           </TouchableOpacity>
           <TouchableOpacity onPress={this.onPressPlayPause} style={styles.playbackButton}>
-            <Ionicons name={this.showingPlayButton ? "md-play" : "md-pause"} color="white" size={35} />
+            <Ionicons name={this.showingPlayButton ? "md-play" : "md-pause"} color="white" size={PLAYBACK_BUTTON_SIZE} />
           </TouchableOpacity>
         </View>
         <View style={styles.playbackBarContainer}>
@@ -248,7 +250,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20
   },
   playbackButton: {
-    paddingHorizontal: 15
+    paddingHorizontal: 10
   },
   square: {
     width: 160,
