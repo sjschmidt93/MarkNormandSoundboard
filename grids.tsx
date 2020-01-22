@@ -3,11 +3,11 @@ import { SquareProps } from "./screens/SoundGrid"
 export const markGridProps: SquareProps[][] = [
   [
     { 
-      sound: require('./assets/sounds/praise_allah.mp3'),
+      sound: require('./assets/sounds/mark/praise_allah.mp3'),
       text: 'Praise Allah!'
     },
     {
-      sound: require('./assets/sounds/i_love_it.mp3'),
+      sound: require('./assets/sounds/mark/i_love_it.mp3'),
       text: 'I love it!!'
     }
   ],
@@ -41,37 +41,37 @@ export const markGridProps: SquareProps[][] = [
       text: 'M4B'
     }
   ],
-  // [
-  //   {
-  //     sound: null,
-  //     text: 'M5A'
-  //   },
-  //   {
-  //     sound: null,
-  //     text: 'M5B'
-  //   }
-  // ],
-  // [
-  //   {
-  //     sound: require('./assets/sounds/praise_allah.mp3'),
-  //     text: 'Praise Allah!'
-  //   },
-  //   {
-  //     sound: null,
-  //     text: 'M6B'
-  //   }
-  // ]
+  [
+    {
+      sound: null,
+      text: 'M5A'
+    },
+    {
+      sound: null,
+      text: 'M5B'
+    }
+  ],
+  [
+    {
+      sound: null,
+      text: 'Praise Allah!'
+    },
+    {
+      sound: null,
+      text: 'Random sound'
+    }
+  ]
 ]
 
 export const joeGridProps: SquareProps[][] = [
   [
     { 
-      sound: null,
-      text: 'J1A',
+      sound: require('./assets/sounds/joe/silent_re.mp3'),
+      text: 'Silent re',
     },
     {
-      sound: require('./assets/sounds/i_love_it.mp3'),
-      text: 'J1B',
+      sound: require('./assets/sounds/joe/herpes.mp3'),
+      text: 'Herpes',
     }
   ],
   [
@@ -121,7 +121,7 @@ export const joeGridProps: SquareProps[][] = [
     },
     {
       sound: null,
-      text: 'J6B'
+      text: 'Random sound'
     }
   ]
 ]

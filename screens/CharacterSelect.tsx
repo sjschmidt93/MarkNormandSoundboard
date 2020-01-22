@@ -35,8 +35,8 @@ export default class CharacterSelect extends React.Component<NavigationProps & S
 
   loadAudio = async () => {
     try {
-      await this.markAudio.loadAsync(require('./../assets/sounds/praise_allah.mp3'))
-      await this.joeAudio.loadAsync(require('./../assets/sounds/praise_allah.mp3'))
+      await this.markAudio.loadAsync(require('./../assets/sounds/mark/praise_allah.mp3'))
+      await this.joeAudio.loadAsync(require('./../assets/sounds/joe/herpes.mp3'))
     } catch (error) {
       console.warn("Failed to load audio")
     }
