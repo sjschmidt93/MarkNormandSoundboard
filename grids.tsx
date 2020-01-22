@@ -66,7 +66,7 @@ export const markGridProps: SquareProps[][] = [
 export const joeGridProps: SquareProps[][] = [
   [
     { 
-      sound: require('./assets/sounds/joe/silent_re.mp3'),
+      sound: null, //require('./assets/sounds/joe/silent_re.mp3'),
       text: 'Silent re',
     },
     {
