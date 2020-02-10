@@ -72,7 +72,7 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
   
 export interface SquareProps {
   sound: PlaybackSource
-  text: String
+  text: string
 }
 
 @inject('soundStore')
@@ -105,6 +105,8 @@ class Square extends React.Component<SquareProps & SoundStoreProp> {
 
     this.props.soundStore.duration = this.duration
 
+    this.props.soundStore.soundText = this.props.text
+
     this.props.soundStore.animateBar()
     if (this.played) {
       this.props.soundStore.replay(this.sound)
@@ -126,9 +128,10 @@ class Square extends React.Component<SquareProps & SoundStoreProp> {
 const CIRCLE_RADIUS = 10
 const SCREEN_WIDTH = Dimensions.get('screen').width
 const ANIMATION_END_VALUE = SCREEN_WIDTH - 100 - CIRCLE_RADIUS
-const PLAYBACK_BUTTONS_HEIGHT = 100
+const PLAYBACK_BUTTONS_HEIGHT = 120
 const PLAYBACK_BUTTON_SIZE = 30
 
+//TODO: make this component its own file
 @inject('soundStore')
 @observer
 class PlaybackButtons extends React.Component<SoundStoreProp> {
@@ -215,6 +218,7 @@ class PlaybackButtons extends React.Component<SoundStoreProp> {
 
     return (
       <View style={styles.playbackContainer}>
+        <Text style={styles.playbackContainerText}>{this.props.soundStore.soundText}</Text>
         <View style={styles.playbackButtonsContainer}>
           <MuteButton containerStyle={styles.playbackButton} size={PLAYBACK_BUTTON_SIZE} />
           <TouchableOpacity onPress={this.onPressStop} style={styles.playbackButton}>
@@ -238,6 +242,9 @@ const styles = StyleSheet.create({
   container: {
     paddingBottom: 20,
     flex: 1
+  },
+  playbackContainerText: {
+    textAlign: 'center'
   },
   scrollContainer: {
     paddingVertical: 20,

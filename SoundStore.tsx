@@ -1,7 +1,6 @@
 import { observable, action, computed } from "mobx"
 import { Audio } from "expo-av"
 import _ from "lodash"
-import { PlaybackStatus } from "expo-av/build/AV"
 
 export class SoundStore {
   @observable
@@ -96,6 +95,7 @@ export class SoundStore {
     return this._isPaused
   }
 
+  // TODO: clean this up / make setter
   animateBar: () => void = null
 }
 
