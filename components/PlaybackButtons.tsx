@@ -1,17 +1,26 @@
 import { inject, observer } from "mobx-react"
 import { Animated, View, TouchableOpacity, Dimensions, StyleSheet, Text } from "react-native"
-import { observable, computed } from "mobx"
+import { observable, computed, reaction } from "mobx"
 import React from "react"
 import { SoundStoreProp } from "../screens/SoundGrid"
 import { MuteButton } from "../screens/CharacterSelect"
 import { Foundation, Ionicons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
 
 export const PLAYBACK_BUTTONS_HEIGHT = 120
 
-const SCREEN_WIDTH = Dimensions.get('screen').width
+const DIMENSIONS = Dimensions.get('screen')
+const SCREEN_WIDTH = DIMENSIONS.width
 const CIRCLE_RADIUS = 10
 const ANIMATION_END_VALUE = SCREEN_WIDTH - 100 - CIRCLE_RADIUS
 const PLAYBACK_BUTTON_SIZE = 30
+const BOTTOM_FINAL = 5
+const BOTTOM_INITIAL = -(BOTTOM_FINAL + PLAYBACK_BUTTONS_HEIGHT)
+
+
+// todo: finalize these
+const GRADIENT_COLOR_ONE = 'rgb(70,70,70)'
+const GRADIENT_COLOR_TWO = 'rgb(174,174,178)'
 
 @inject('soundStore')
 @observer
@@ -23,6 +32,9 @@ export default class PlaybackButtons extends React.Component<SoundStoreProp> {
 
   @observable
   circleX = new Animated.Value(0)
+
+  @observable
+  bottom = new Animated.Value(BOTTOM_INITIAL)
 
   componentDidMount() {
     this.props.soundStore.animateBar = this.animateBar
@@ -92,41 +104,57 @@ export default class PlaybackButtons extends React.Component<SoundStoreProp> {
     ).start(result => this.finished = result.finished)
   }
 
-  render() {
-    if (this.props.soundStore.isSoundNil) {
-      return null
-    }
+  reaction = reaction(
+    () => this.props.soundStore.isSoundNil,
+    isSoundNil => Animated.timing(
+      this.bottom,
+      {
+        toValue: isSoundNil ? BOTTOM_INITIAL : BOTTOM_FINAL
+      }
+    ).start()
+  )
 
+  render() {
     return (
-      <View style={styles.playbackContainer}>
-        <Text style={styles.playbackContainerText}>{this.props.soundStore.soundText}</Text>
-        <View style={styles.playbackButtonsContainer}>
-          <MuteButton containerStyle={styles.playbackButton} size={PLAYBACK_BUTTON_SIZE} />
-          <TouchableOpacity onPress={this.onPressStop} style={styles.playbackButton}>
-            <Foundation name="stop" color="white" size={PLAYBACK_BUTTON_SIZE} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.onPressPlayPause} style={styles.playbackButton}>
-            <Ionicons name={this.showingPlayButton ? "md-play" : "md-pause"} color="white" size={PLAYBACK_BUTTON_SIZE} />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.playbackBarContainer}>
-          <Animated.View style={[styles.circle, { transform: [{ translateX: this.circleX }] }]} />
-          <View style={styles.playbackBar} />
-          <Animated.View style={[styles.completedPlaybackBar, { width: Animated.add(this.circleX, CIRCLE_RADIUS) }]} />
-        </View>
-      </View>
+      <Animated.View style={{ position: 'absolute', bottom: this.bottom }}>
+        <LinearGradient
+          start={[0, 1]}
+          end={[1, 0]}
+          style={styles.playbackContainer}
+          colors={[GRADIENT_COLOR_ONE, GRADIENT_COLOR_TWO]}
+        >
+          <Text style={styles.playbackContainerText}>{this.props.soundStore.soundText}</Text>
+          <View style={styles.playbackButtonsContainer}>
+            <MuteButton containerStyle={styles.playbackButton} size={PLAYBACK_BUTTON_SIZE} />
+            <TouchableOpacity onPress={this.onPressStop} style={styles.playbackButton}>
+              <Foundation name="stop" color="white" size={PLAYBACK_BUTTON_SIZE} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.onPressPlayPause} style={styles.playbackButton}>
+              <Ionicons name={this.showingPlayButton ? "md-play" : "md-pause"} color="white" size={PLAYBACK_BUTTON_SIZE} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.playbackBarContainer}>
+            <Animated.View style={[styles.circle, { transform: [{ translateX: this.circleX }] }]} />
+            <View style={styles.playbackBar} />
+            <Animated.View style={[styles.completedPlaybackBar, { width: Animated.add(this.circleX, CIRCLE_RADIUS) }]} />
+          </View>
+        </LinearGradient>
+      </Animated.View>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  animatedContainer: {
+    position: 'absolute'
+  },
   playbackContainer: {
     paddingHorizontal: 20,
     paddingVertical: 20,
     backgroundColor: 'rgb(174,174,178)',
     marginHorizontal: 30,
-    position: 'absolute',
-    bottom: 5,
+    //position: 'absolute',
+    //bottom: 5,
     width: SCREEN_WIDTH - 60,
     height: PLAYBACK_BUTTONS_HEIGHT,
     borderRadius: 10
