@@ -7,6 +7,7 @@ import { Audio } from 'expo-av'
 import { Comedian, SoundStoreProp } from './SoundGrid'
 import { inject, observer } from 'mobx-react'
 import { Octicons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
 
 export const tuesdaysBlue = '#032D46'
 
@@ -14,15 +15,17 @@ export interface NavigationProps {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>
 }
 
+export const navigationOptions = {
+  headerStyle: { 
+    backgroundColor: tuesdaysBlue
+  },
+  headerTintColor: 'white'
+}
+
 @inject('soundStore')
 @observer
 export default class CharacterSelect extends React.Component<NavigationProps & SoundStoreProp> {
-  static navigationOptions = {
-    headerStyle: { 
-      backgroundColor: tuesdaysBlue
-    },
-    headerTintColor: 'white'
-  }
+  static navigationOptions = navigationOptions
 
   startScreenSound = this.props.navigation.getParam('sound')
 
@@ -52,10 +55,12 @@ export default class CharacterSelect extends React.Component<NavigationProps & S
     this.props.soundStore.stop()
   }
 
+  onPressSupport = () => this.props.navigation.navigate('SupportPage')
+
   render() {
     return (
       <View style={styles.container}>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, alignItems: 'center' }}>
           <Text style={styles.chooseText}>Choose your Comedian</Text>
           <View style={styles.socialContainer}>
             <SocialIcon type="twitter"    onPress={() => Linking.openURL('https://twitter.com/tuesdaystories?lang=en')} />
@@ -77,6 +82,17 @@ export default class CharacterSelect extends React.Component<NavigationProps & S
               <Text style={styles.comedianText}>Joe List</Text>
             </View>
           </View>
+          <LinearGradient
+            start={[0, 1]}
+            end={[1, 0]}
+            colors={['#7C98B3', '#637081']}
+            style={styles.supportButtonContainer}
+          >
+            {/*TODO: make linear gradient button component*/}
+            <TouchableOpacity onPress={this.onPressSupport}>
+              <Text style={{color: 'white'}}>Support the show!</Text>
+            </TouchableOpacity>
+          </LinearGradient>
         </View>
         <MuteButton />
       </View>
@@ -93,7 +109,7 @@ interface MuteButtonProps {
 @observer
 export class MuteButton extends React.Component<SoundStoreProp & MuteButtonProps> {
   static defaultProps = {
-    size: 25,
+    size: 30,
     containerStyle: {
       alignSelf: 'flex-end',
       padding: 10
@@ -116,6 +132,10 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     justifyContent: 'space-between'
+  },
+  supportButtonContainer: {
+    marginTop: 30,
+    padding: 15
   },
   chooseText: {
     color: 'white',

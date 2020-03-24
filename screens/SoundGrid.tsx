@@ -1,6 +1,6 @@
 import React from "react"
 import { ScrollView, View, TouchableOpacity, StyleSheet, Text } from "react-native"
-import { NavigationProps, tuesdaysBlue } from "./CharacterSelect"
+import { NavigationProps, tuesdaysBlue, navigationOptions } from "./CharacterSelect"
 import { PlaybackSource } from "expo-av/build/AV"
 import { Audio } from 'expo-av'
 import { markGridProps, joeGridProps } from "../grids"
@@ -23,12 +23,7 @@ export enum Comedian {
 @inject('soundStore')
 @observer
 export default class SoundGrid extends React.Component<NavigationProps & SoundStoreProp> {
-  static navigationOptions = {
-    headerStyle: { 
-      backgroundColor: tuesdaysBlue
-    },
-    headerTintColor: 'white'
-  }
+  static navigationOptions = navigationOptions
 
   @computed
   get comedian() {
@@ -42,9 +37,9 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
 
   onPressStop = () => this.props.soundStore.stop()
 
-  render () {
+  render() {
     return (
-      <View style={{ flex : 1 }}>
+      <View style={{ flex: 1 }}>
         <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: PLAYBACK_BUTTONS_HEIGHT }}>
           <View style={styles.container}>
             <Text style={styles.comedianText}>{this.comedian}</Text>
@@ -52,8 +47,8 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
             {
               this.gridProps.map((gridProps, index) => (
                 <View key={index} style={styles.rowContainer}>
-                  { 
-                    gridProps.map((props, index) => 
+                  {
+                    gridProps.map((props, index) =>
                       <Square key={index} sound={props.sound} text={props.text} />
                     )
                   }
@@ -69,7 +64,7 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
     )
   }
 }
-  
+
 export interface SquareProps {
   sound: PlaybackSource
   text: string
@@ -145,7 +140,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: 'white',
+    //borderColor: 'white',
     borderWidth: 1
   },
   rowContainer: {
@@ -155,7 +150,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   squareText: {
-    color: 'red'
+    color: 'white',
+    textAlign: 'center'
   },
   comedianText: {
     color: 'white',
@@ -164,4 +160,3 @@ const styles = StyleSheet.create({
     paddingBottom: 20
   }
 })
-  

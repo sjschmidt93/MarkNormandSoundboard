@@ -9,7 +9,6 @@ interface SocialRowProps {
 }
 
 export default class SocialRow extends React.Component<SocialRowProps> {
-
   @computed
   get twitter() {
     return this.props.comedian === Comedian.MARK
@@ -45,7 +44,7 @@ export default class SocialRow extends React.Component<SocialRowProps> {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     paddingHorizontal: 60,
     paddingBottom: 20
   }

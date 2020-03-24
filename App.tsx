@@ -6,12 +6,14 @@ import SoundGrid from './screens/SoundGrid'
 import StartScreen from './screens/StartScreen'
 import { Provider } from 'mobx-react'
 import soundStore from './SoundStore'
+import SupportPage from './screens/SupportPage'
 
 const AppNavigator = createStackNavigator(
   {
     StartScreen: StartScreen,
     CharacterSelect: CharacterSelect,
     SoundGrid: SoundGrid,
+    SupportPage: SupportPage
   },
   {
     initialRouteName: 'StartScreen'

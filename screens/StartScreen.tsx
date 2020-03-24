@@ -5,6 +5,10 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import { Audio } from 'expo-av'
 import { observer, inject } from 'mobx-react'
 import { SoundStoreProp } from "./SoundGrid"
+import { LinearGradient } from "expo-linear-gradient"
+
+const GRADIENT_COLOR_ONE = '#7C98B3'
+const GRADIENT_COLOR_TWO = '#637081'
 
 @inject('soundStore')
 @observer
@@ -35,9 +39,16 @@ export default class StartScreen extends React.Component<NavigationProps & Sound
       <View style={styles.outerContainer}>
         <View style={styles.container}>
           <Image style={styles.tuesdaysLogo} source={require('./../assets/images/tuesdays_logo.jpg')} />
-          <TouchableOpacity style={styles.startTextContainer} onPress={this.onPressStart}>
-            <Text style={styles.startText}>Start</Text>
-          </TouchableOpacity>
+          <LinearGradient
+            start={[0, 1]}
+            end={[1, 0]}
+            style={styles.startTextContainer}
+            colors={[GRADIENT_COLOR_ONE, GRADIENT_COLOR_TWO]}
+          >
+            <TouchableOpacity onPress={this.onPressStart}>
+              <Text style={styles.startText}>Start</Text>
+            </TouchableOpacity>
+          </LinearGradient>
         </View>
         <MuteButton />
       </View>
@@ -60,15 +71,17 @@ const styles = StyleSheet.create({
     width: 400
   },
   startTextContainer: {
-    borderColor: 'white',
-    borderWidth: 5,
-    borderRadius: 25,
+    //borderColor: 'white',
+    //borderWidth: 5,
+    //borderRadius: 25,
     padding: 5,
-    margin: 5
+    margin: 5,
+    width: '60%'
   },
   startText: {
     fontSize: 38,
     color: 'white',
-    padding: 5
+    padding: 5,
+    textAlign: 'center'
   }
 })

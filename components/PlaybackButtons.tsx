@@ -19,8 +19,8 @@ const BOTTOM_INITIAL = -(BOTTOM_FINAL + PLAYBACK_BUTTONS_HEIGHT)
 
 
 // todo: finalize these
-const GRADIENT_COLOR_ONE = 'rgb(70,70,70)'
-const GRADIENT_COLOR_TWO = 'rgb(174,174,178)'
+const GRADIENT_COLOR_ONE = '#28313B'
+const GRADIENT_COLOR_TWO = '#485461'
 
 @inject('soundStore')
 @observer
@@ -181,7 +181,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10
   },
   playbackContainerText: {
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'white'
   },
   circle: {
     height: CIRCLE_RADIUS * 2,

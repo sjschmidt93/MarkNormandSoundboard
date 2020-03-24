@@ -17,8 +17,8 @@ export const markGridProps: SquareProps[][] = [
       text: 'theme test'
     },
     {
-      sound: null,
-      text: 'M2B'
+      sound: require('./assets/sounds/mark/stomped_queefed_on.mp3'),
+      text: 'Stomped, raped, and queefed on'
     }
   ],
   [
@@ -66,8 +66,8 @@ export const markGridProps: SquareProps[][] = [
 export const joeGridProps: SquareProps[][] = [
   [
     { 
-      sound: null, //require('./assets/sounds/joe/silent_re.mp3'),
-      text: 'Silent re',
+      sound: require('./assets/sounds/joe/cum_in_my_mouth.mp3'),
+      text: 'Cum in my mouth',
     },
     {
       sound: require('./assets/sounds/joe/herpes.mp3'),
@@ -76,51 +76,51 @@ export const joeGridProps: SquareProps[][] = [
   ],
   [
     {
-      sound: null,
+      sound: null,//require('./assets/sounds/joe/.mp3'),
       text: 'J2A'
     },
     {
-      sound: null,
+      sound: null,//require('./assets/sounds/joe/.mp3'),
       text: 'J2B'
     }
   ],
   [
     {
-      sound: null,
+      sound: null,//require('./assets/sounds/joe/.mp3'),
       text: 'J3A'
     },
     {
-      sound: null,
+      sound: null,//require('./assets/sounds/joe/.mp3'),
       text: 'J3B'
     }
   ],
   [
     {
-      sound: null,
+      sound: null,//require('./assets/sounds/joe/.mp3'),
       text: 'J4A'
     },
     {
-      sound: null,
+      sound: null,//require('./assets/sounds/joe/.mp3'),
       text: 'J4B'
     }
   ],
   [
     {
-      sound: null,
+      sound: null,//require('./assets/sounds/joe/.mp3'),
       text: 'J5A'
     },
     {
-      sound: null,
+      sound: null,//require('./assets/sounds/joe/.mp3'),
       text: 'J5B'
     }
   ],
   [
     {
-      sound: null,
+      sound: null,//require('./assets/sounds/joe/.mp3'),
       text: 'J6A'
     },
     {
-      sound: null,
+      sound: null,//require('./assets/sounds/joe/.mp3'),
       text: 'Random sound'
     }
   ]
