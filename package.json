@@ -16,6 +16,7 @@
     "lodash": "^4.17.15",
     "mobx": "^5.15.1",
     "mobx-react": "^6.1.4",
+    "node": "^12.14.1",
     "path-to-regexp": "^6.1.0",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
