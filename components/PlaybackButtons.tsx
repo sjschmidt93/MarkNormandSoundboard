@@ -153,8 +153,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     backgroundColor: 'rgb(174,174,178)',
     marginHorizontal: 30,
-    //position: 'absolute',
-    //bottom: 5,
     width: SCREEN_WIDTH - 60,
     height: PLAYBACK_BUTTONS_HEIGHT,
     borderRadius: 10
