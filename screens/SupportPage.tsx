@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import { Ionicons } from '@expo/vector-icons'
 
 export default class SupportPage extends React.Component<NavigationProps> {
-  static navigationOptions = navigationOptions
+  static navigationOptions = {...navigationOptions, title: "Support the show" }
 
   onPressChipotle = () => 
     Linking.openURL("https://chipotlestore.wgiftcard.com/responsive/personalize_responsive/chooseDesign/chipotle_responsive/1")
@@ -15,6 +15,9 @@ export default class SupportPage extends React.Component<NavigationProps> {
 
   onPressPatreon = () => 
     Linking.openURL("https://www.patreon.com/tuesdays/posts")
+
+  onPressShirt = () =>
+    Linking.openURL("https://podcastmerch.com/collections/tuesdays-with-stories")
 
   websites = (
     <View style={styles.sectionContainer}>
@@ -38,7 +41,7 @@ export default class SupportPage extends React.Component<NavigationProps> {
   )
 
   giftCards = (
-    <View>
+    <>
       <View style={styles.sectionContainer}>
         <Text style={styles.text}>Buy them a gift card</Text>
         <View style={{ flexDirection: 'row' }}>
@@ -49,7 +52,7 @@ export default class SupportPage extends React.Component<NavigationProps> {
             <Image source={require('./../assets/images/uber.png')} style={styles.uberImage} />
           </TouchableOpacity>
         </View>
-        <View>
+        <>
           <View style={styles.emailContainer}>
             <Ionicons name="ios-mail" color="white" size={22} />
             <Text style={styles.emailText}> : joesemail@gmail.com</Text>
@@ -58,18 +61,29 @@ export default class SupportPage extends React.Component<NavigationProps> {
             <Ionicons name="ios-mail" color="white" size={22} />
             <Text style={styles.emailText}> : marksemail@gmail.com</Text>
           </View>
-        </View>
+        </>
       </View>
+    </>
+  )
+
+  shirts = (
+    <View style={styles.sectionContainer}>
+      <Text style={[styles.text, styles.websiteHeader]}>Buy a shirt</Text>
+      <TouchableOpacity style={styles.websiteContainer} onPress={this.onPressShirt}>
+        <Text style={styles.websiteText}>
+          podcastmerch.com
+        </Text>
+      </TouchableOpacity>
     </View>
   )
 
   render() {
     return (
       <View style={styles.container}>
-        <Text style={[styles.text, styles.header]}>Support Joe and Mark</Text>
         <View style={styles.innerContainer}>
           {this.patreon}
           {this.giftCards}
+          {this.shirts}
           {this.websites}
         </View>
       </View>
@@ -136,7 +150,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-    fontSize: 26,
+    fontSize: 22,
     textAlign: 'center'
   },
   websiteText: {

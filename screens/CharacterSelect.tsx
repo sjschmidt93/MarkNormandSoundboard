@@ -25,7 +25,7 @@ export const navigationOptions = {
 @inject('soundStore')
 @observer
 export default class CharacterSelect extends React.Component<NavigationProps & SoundStoreProp> {
-  static navigationOptions = navigationOptions
+  static navigationOptions = {...navigationOptions, title: "Choose your comedian" }
 
   startScreenSound = this.props.navigation.getParam('sound')
 
@@ -61,7 +61,7 @@ export default class CharacterSelect extends React.Component<NavigationProps & S
     return (
       <View style={styles.container}>
         <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={styles.chooseText}>Choose your Comedian</Text>
+          {/* <Text style={styles.chooseText}>Choose your Comedian</Text> */}
           <View style={styles.socialContainer}>
             <SocialIcon type="twitter"    onPress={() => Linking.openURL('https://twitter.com/tuesdaystories?lang=en')} />
             <SocialIcon type="facebook"   onPress={() => Linking.openURL('https://www.facebook.com/TuesdayStories/')} />
@@ -127,15 +127,14 @@ export class MuteButton extends React.Component<SoundStoreProp & MuteButtonProps
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
     backgroundColor: tuesdaysBlue,
     width: '100%',
     flex: 1,
     justifyContent: 'space-between'
   },
   supportButtonContainer: {
-    marginTop: 30,
-    padding: 15
+    marginTop: 40,
+    padding: 17
   },
   chooseText: {
     color: 'white',

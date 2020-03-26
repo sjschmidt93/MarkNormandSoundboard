@@ -1,6 +1,6 @@
 import React from "react"
 import { ScrollView, View, TouchableOpacity, StyleSheet, Text } from "react-native"
-import { NavigationProps, tuesdaysBlue, navigationOptions } from "./CharacterSelect"
+import { NavigationProps, navigationOptions } from "./CharacterSelect"
 import { PlaybackSource } from "expo-av/build/AV"
 import { Audio } from 'expo-av'
 import { markGridProps, joeGridProps } from "../grids"
@@ -20,10 +20,19 @@ export enum Comedian {
   MARK = 'Mark'
 }
 
+const tuesdaysBlue = '#032D46'
+
+// remove require cycle so i can import code
 @inject('soundStore')
 @observer
-export default class SoundGrid extends React.Component<NavigationProps & SoundStoreProp> {
-  static navigationOptions = navigationOptions
+export default class SoundGrid extends React .Component<NavigationProps & SoundStoreProp> {
+  static navigationOptions = ({navigation}) => ({
+    headerStyle: { 
+      backgroundColor: tuesdaysBlue
+    },
+    headerTintColor: 'white',
+    title: navigation.getParam('comedian')
+  })
 
   @computed
   get comedian() {
@@ -39,10 +48,9 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.outerContainer}>
         <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: PLAYBACK_BUTTONS_HEIGHT }}>
           <View style={styles.container}>
-            <Text style={styles.comedianText}>{this.comedian}</Text>
             <SocialRow comedian={this.comedian} />
             {
               this.gridProps.map((gridProps, index) => (
@@ -57,7 +65,7 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
             }
           </View>
         </ScrollView>
-        <View style={styles.footer}>
+        <View>
           <PlaybackButtons />
         </View>
       </View>
@@ -125,6 +133,10 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     flex: 1
   },
+  outerContainer: { 
+    flex: 1,
+    backgroundColor: tuesdaysBlue 
+  },
   playbackContainerText: {
     textAlign: 'center'
   },
@@ -140,7 +152,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    //borderColor: 'white',
     borderWidth: 1
   },
   rowContainer: {
