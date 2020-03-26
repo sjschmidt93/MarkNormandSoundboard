@@ -1,15 +1,15 @@
 {
     "test": {
         "awscloudformation": {
-            "AuthRoleName": "amplify-marknormsoundboard-test-103145-authRole",
-            "UnauthRoleArn": "arn:aws:iam::247276172117:role/amplify-marknormsoundboard-test-103145-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::247276172117:role/amplify-marknormsoundboard-test-103145-authRole",
+            "AuthRoleName": "amplify-marknormsoundboard-test-164422-authRole",
+            "UnauthRoleArn": "arn:aws:iam::247276172117:role/amplify-marknormsoundboard-test-164422-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::247276172117:role/amplify-marknormsoundboard-test-164422-authRole",
             "Region": "us-east-1",
-            "DeploymentBucketName": "amplify-marknormsoundboard-test-103145-deployment",
-            "UnauthRoleName": "amplify-marknormsoundboard-test-103145-unauthRole",
-            "StackName": "amplify-marknormsoundboard-test-103145",
-            "StackId": "arn:aws:cloudformation:us-east-1:247276172117:stack/amplify-marknormsoundboard-test-103145/87238880-6f6e-11ea-bd57-0e167b726915",
-            "AmplifyAppId": "d1cwyhj0nm88jh"
+            "DeploymentBucketName": "amplify-marknormsoundboard-test-164422-deployment",
+            "UnauthRoleName": "amplify-marknormsoundboard-test-164422-unauthRole",
+            "StackName": "amplify-marknormsoundboard-test-164422",
+            "StackId": "arn:aws:cloudformation:us-east-1:247276172117:stack/amplify-marknormsoundboard-test-164422/94dda440-6fa2-11ea-9c24-1246411399d1",
+            "AmplifyAppId": "d1d5uzowxgzfl"
         }
     }
 }

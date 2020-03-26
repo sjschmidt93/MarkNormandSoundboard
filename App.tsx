@@ -7,8 +7,11 @@ import StartScreen from './screens/StartScreen'
 import { Provider } from 'mobx-react'
 import soundStore from './SoundStore'
 import SupportPage from './screens/SupportPage'
-import Amplify from 'aws-amplify'
 import SuggestionPage from './screens/SuggestionPage'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import config from './aws-exports'
+
+API.configure(config)
 
 const AppNavigator = createStackNavigator(
   {

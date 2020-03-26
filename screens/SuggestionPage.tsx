@@ -4,6 +4,8 @@ import { View, StyleSheet, Text, TextInput, TextInputProps, StyleProp, ViewStyle
 import { observer } from "mobx-react"
 import { observable, action } from "mobx"
 import GradientButton from "../components/GradientButton"
+import API, { graphqlOperation } from '@aws-amplify/api'
+import { createSuggestion } from "../src/graphql/mutations"
 
 const TOP_TEXT = "If there is an audio clip you would like to see in the app, you can \
 submit a suggestion below. Just input a description of the audio, \
@@ -22,7 +24,15 @@ export default class SuggestionPage extends React.Component<NavigationProps> {
   @observable
   timestamp = ""
 
-  onPressSubmit = () => {
+  onPressSubmit = async () => {
+    const suggestion = {
+      description: this.description,
+      episodeNumber: this.episodeNumber,
+      timestamp: this.timestamp
+    }
+
+    await API.graphql(graphqlOperation(createSuggestion, { input: suggestion }))
+
     this.clearFields()
     this.props.navigation.goBack()
   }

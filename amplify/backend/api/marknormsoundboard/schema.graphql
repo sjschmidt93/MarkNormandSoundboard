@@ -1,0 +1,6 @@
+type Suggestion @model {
+  id: ID!
+  description: String
+  episodeNumber: String
+  timestamp: String
+}
