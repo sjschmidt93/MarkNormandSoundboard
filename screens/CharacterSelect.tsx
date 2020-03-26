@@ -15,9 +15,10 @@ export interface NavigationProps {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>
 }
 
+// TODO: use better way of sharing nav options between screens
 export const navigationOptions = {
   headerStyle: { 
-    backgroundColor: tuesdaysBlue
+    backgroundColor: tuesdaysBlue // TODO: change header color
   },
   headerTintColor: 'white'
 }

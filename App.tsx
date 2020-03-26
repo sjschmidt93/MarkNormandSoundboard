@@ -8,13 +8,15 @@ import { Provider } from 'mobx-react'
 import soundStore from './SoundStore'
 import SupportPage from './screens/SupportPage'
 import Amplify from 'aws-amplify'
+import SuggestionPage from './screens/SuggestionPage'
 
 const AppNavigator = createStackNavigator(
   {
     StartScreen: StartScreen,
     CharacterSelect: CharacterSelect,
     SoundGrid: SoundGrid,
-    SupportPage: SupportPage
+    SupportPage: SupportPage,
+    SuggestionPage: SuggestionPage
   },
   {
     initialRouteName: 'StartScreen',

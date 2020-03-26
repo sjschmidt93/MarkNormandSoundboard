@@ -1,6 +1,6 @@
 import React from "react"
 import { ScrollView, View, TouchableOpacity, StyleSheet, Text } from "react-native"
-import { NavigationProps, navigationOptions } from "./CharacterSelect"
+import { NavigationProps } from "./CharacterSelect"
 import { PlaybackSource } from "expo-av/build/AV"
 import { Audio } from 'expo-av'
 import { markGridProps, joeGridProps } from "../grids"
@@ -10,6 +10,7 @@ import { computed } from 'mobx'
 import { SoundStore } from "../SoundStore"
 import SocialRow from "../components/SocialRow"
 import PlaybackButtons, { PLAYBACK_BUTTONS_HEIGHT } from "../components/PlaybackButtons"
+import GradientButton from "../components/GradientButton"
 
 export interface SoundStoreProp {
   soundStore: SoundStore
@@ -22,10 +23,10 @@ export enum Comedian {
 
 const tuesdaysBlue = '#032D46'
 
-// remove require cycle so i can import code
+// TODO:: remove require cycle so i can import code
 @inject('soundStore')
 @observer
-export default class SoundGrid extends React .Component<NavigationProps & SoundStoreProp> {
+export default class SoundGrid extends React.Component<NavigationProps & SoundStoreProp> {
   static navigationOptions = ({navigation}) => ({
     headerStyle: { 
       backgroundColor: tuesdaysBlue
@@ -46,6 +47,8 @@ export default class SoundGrid extends React .Component<NavigationProps & SoundS
 
   onPressStop = () => this.props.soundStore.stop()
 
+  onPressSuggest = () => this.props.navigation.navigate('SuggestionPage')
+
   render() {
     return (
       <View style={styles.outerContainer}>
@@ -64,6 +67,11 @@ export default class SoundGrid extends React .Component<NavigationProps & SoundS
               ))
             }
           </View>
+          <GradientButton
+            text="Suggest audio clip"
+            onPress={this.onPressSuggest}
+            containerStyle={styles.suggestButtonContainer}
+          />
         </ScrollView>
         <View>
           <PlaybackButtons />
@@ -136,6 +144,10 @@ const styles = StyleSheet.create({
   outerContainer: { 
     flex: 1,
     backgroundColor: tuesdaysBlue 
+  },
+  suggestButtonContainer: {
+    width: '50%',
+    alignSelf: 'center'
   },
   playbackContainerText: {
     textAlign: 'center'
