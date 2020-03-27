@@ -91,7 +91,7 @@ export default class CharacterSelect extends React.Component<NavigationProps & S
           >
             {/*TODO: make linear gradient button component*/}
             <TouchableOpacity onPress={this.onPressSupport}>
-              <Text style={{color: 'white'}}>Support the show!</Text>
+              <Text style={{ color: 'white' }}>Support Joe and Mark!</Text>
             </TouchableOpacity>
           </LinearGradient>
         </View>
@@ -147,7 +147,8 @@ const styles = StyleSheet.create({
   },
   comedianText: {
     color: 'white',
-    paddingTop: 5
+    paddingTop: 5,
+    fontSize: 18
   },
   comedianButtonContainer: {
     alignItems: 'center',

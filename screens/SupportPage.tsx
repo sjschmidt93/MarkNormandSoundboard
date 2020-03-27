@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler"
 import { Ionicons } from '@expo/vector-icons'
 
 export default class SupportPage extends React.Component<NavigationProps> {
-  static navigationOptions = {...navigationOptions, title: "Support the show" }
+  static navigationOptions = {...navigationOptions, title: "Support Joe and Mark" }
 
   onPressChipotle = () => 
     Linking.openURL("https://chipotlestore.wgiftcard.com/responsive/personalize_responsive/chooseDesign/chipotle_responsive/1")

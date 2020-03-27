@@ -1,6 +1,6 @@
 import React from "react"
 import { NavigationProps, navigationOptions, tuesdaysBlue } from "./CharacterSelect"
-import { View, StyleSheet, Text, TextInput, TextInputProps, StyleProp, ViewStyle } from "react-native"
+import { View, StyleSheet, Text, TextInput, TextInputProps, StyleProp, ViewStyle, Alert } from "react-native"
 import { observer } from "mobx-react"
 import { observable, action } from "mobx"
 import GradientButton from "../components/GradientButton"
@@ -24,17 +24,64 @@ export default class SuggestionPage extends React.Component<NavigationProps> {
   @observable
   timestamp = ""
 
+  @observable
+  isSuccess = true
+
+  @action
   onPressSubmit = async () => {
-    const suggestion = {
-      description: this.description,
-      episodeNumber: this.episodeNumber,
-      timestamp: this.timestamp
+    if (this.validateFields()) {
+      const suggestion = {
+        description: this.description,
+        episodeNumber: this.episodeNumber,
+        timestamp: this.timestamp
+      }
+
+      API.graphql(graphqlOperation(createSuggestion, { input: suggestion }))
+        .then(() => this.isSuccess = true)
+        .catch(e => {
+          console.log('Error when creating suggestion', e)
+          Alert.alert('Sorry there was an error. Please try again.')
+        })
+  
+      await API.graphql(graphqlOperation(createSuggestion, { input: suggestion }))
+  
+      this.clearFields()
+    }
+  }
+
+  @action
+  onPressSubmitAgain = () => this.isSuccess = false
+
+  @action
+  onPressBackToBoard = () => this.props.navigation.goBack()
+
+  validateFields = () => {
+    const invalidDescription = this.description === ""
+    const invalidEpisodeNumber = this.episodeNumber === ""
+    const invalidTimestamp = this.timestamp === ""
+
+    const isInvalid = [invalidDescription, invalidEpisodeNumber, invalidTimestamp]
+
+    if (isInvalid.every(valid => !valid)) {
+      return true
     }
 
-    await API.graphql(graphqlOperation(createSuggestion, { input: suggestion }))
+    const invalidFields = ["description", "episode number", "timestamp"]
+                            .filter((_, index) => isInvalid[index])
+                            .join(", ")
 
-    this.clearFields()
-    this.props.navigation.goBack()
+    const isOrAre = invalidFields.length > 1 ? "are" : "is"
+    const fieldOrFields = invalidFields.length > 1 ? "fields" : "field"
+
+    Alert.alert(
+      `Empty ${fieldOrFields}`,
+      `The following ${fieldOrFields} ${isOrAre} empty: ${invalidFields}.`,
+      [
+        { text: 'OK' }
+      ]
+    )
+
+    return false
   }
 
   @action
@@ -45,8 +92,25 @@ export default class SuggestionPage extends React.Component<NavigationProps> {
   }
 
   render() {
-    return (
-      <View style={styles.container}>
+    const success = (
+      <>
+        <Text style={styles.text}>
+          Success! Thanks for your submission.
+        </Text>
+        <GradientButton
+          text="Back to soundboard"
+          onPress={this.onPressBackToBoard}
+          containerStyle={{ marginBottom: 20 }}
+        />
+        <GradientButton
+          text="Make another submission"
+          onPress={this.onPressSubmitAgain}
+        />
+      </>
+    )
+
+    const inputs = (
+      <>
         <Text style={styles.text}>
           {TOP_TEXT}
         </Text>
@@ -80,6 +144,12 @@ export default class SuggestionPage extends React.Component<NavigationProps> {
           text="Submit"
           onPress={this.onPressSubmit}
         />
+      </>
+    )
+
+    return (
+      <View style={styles.container}>
+        {this.isSuccess ? success : inputs}
       </View>
     )
   }
@@ -94,7 +164,7 @@ class SuggestionTextInput extends React.Component<SuggestionTextInputProps> {
   render() {
     return (
       <View style={[styles.inputContainer, this.props.containerStyle]}>
-        <TextInput {...this.props.textInputProps} style={{ color: 'white' }} />
+        <TextInput {...this.props.textInputProps} style={{ color: 'white', fontSize: 16 }} />
       </View>
     )
   }
@@ -105,6 +175,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: tuesdaysBlue,
     padding: 20
+  },
+  statusContainer: {
+    backgroundColor: 'green',
+    width: 250,
+    padding: 5,
+    paddingHorizontal: 10,
+    margin: 5,
+    borderRadius: 5
   },
   inputRowContainer: {
     flexDirection: 'row'
@@ -118,6 +196,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
-    paddingBottom: 20
+    paddingBottom: 20,
+    fontSize: 16
   }
 })
