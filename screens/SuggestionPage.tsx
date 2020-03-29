@@ -25,7 +25,7 @@ export default class SuggestionPage extends React.Component<NavigationProps> {
   timestamp = ""
 
   @observable
-  isSuccess = true
+  isSuccess = false
 
   @action
   onPressSubmit = async () => {
@@ -53,7 +53,10 @@ export default class SuggestionPage extends React.Component<NavigationProps> {
   onPressSubmitAgain = () => this.isSuccess = false
 
   @action
-  onPressBackToBoard = () => this.props.navigation.goBack()
+  onPressBackToBoard = () => {
+    this.props.navigation.goBack()
+    this.isSuccess = false
+  }
 
   validateFields = () => {
     const invalidDescription = this.description === ""

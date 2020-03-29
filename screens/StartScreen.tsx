@@ -39,6 +39,7 @@ export default class StartScreen extends React.Component<NavigationProps & Sound
       <View style={styles.outerContainer}>
         <View style={styles.container}>
           <Image style={styles.tuesdaysLogo} source={require('./../assets/images/tuesdays_logo.jpg')} />
+          
           <LinearGradient
             start={[0, 1]}
             end={[1, 0]}

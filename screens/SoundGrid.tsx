@@ -10,7 +10,7 @@ import { computed } from 'mobx'
 import { SoundStore } from "../SoundStore"
 import SocialRow from "../components/SocialRow"
 import PlaybackButtons, { PLAYBACK_BUTTONS_HEIGHT } from "../components/PlaybackButtons"
-import GradientButton from "../components/GradientButton"
+import GradientButton, { GRADIENT_BUTTON_HEIGHT } from "../components/GradientButton"
 
 export interface SoundStoreProp {
   soundStore: SoundStore
@@ -27,8 +27,8 @@ const tuesdaysBlue = '#032D46'
 @inject('soundStore')
 @observer
 export default class SoundGrid extends React.Component<NavigationProps & SoundStoreProp> {
-  static navigationOptions = ({navigation}) => ({
-    headerStyle: { 
+  static navigationOptions = ({ navigation }) => ({
+    headerStyle: {
       backgroundColor: tuesdaysBlue
     },
     headerTintColor: 'white',
@@ -50,9 +50,13 @@ export default class SoundGrid extends React.Component<NavigationProps & SoundSt
   onPressSuggest = () => this.props.navigation.navigate('SuggestionPage')
 
   render() {
+    const scrollViewContainerStyle = { 
+      paddingBottom: (this.props.soundStore.isSoundNil ? 0 : PLAYBACK_BUTTONS_HEIGHT) + GRADIENT_BUTTON_HEIGHT
+    }
+
     return (
       <View style={styles.outerContainer}>
-        <ScrollView style={styles.scrollContainer} contentContainerStyle={{ paddingBottom: PLAYBACK_BUTTONS_HEIGHT }}>
+        <ScrollView style={styles.scrollContainer} contentContainerStyle={scrollViewContainerStyle}>
           <View style={styles.container}>
             <SocialRow comedian={this.comedian} />
             {
@@ -141,9 +145,12 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     flex: 1
   },
-  outerContainer: { 
+  scrollContentContainer: {
+    paddingBottom: PLAYBACK_BUTTONS_HEIGHT + GRADIENT_BUTTON_HEIGHT
+  },
+  outerContainer: {
     flex: 1,
-    backgroundColor: tuesdaysBlue 
+    backgroundColor: tuesdaysBlue
   },
   suggestButtonContainer: {
     width: '50%',

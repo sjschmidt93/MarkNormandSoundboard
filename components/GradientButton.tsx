@@ -10,6 +10,8 @@ interface GradientButtonProps {
   textStyle?: StyleProp<TextStyle>
 }
 
+export const GRADIENT_BUTTON_HEIGHT = 55
+
 const DEFAULT_COLOR_ONE = '#7C98B3'
 const DEFAULT_COLOR_TWO = '#637081'
 
@@ -39,7 +41,9 @@ export default class GradientButton extends React.Component<GradientButtonProps>
 
 const styles = StyleSheet.create({
   container: {
-    padding: 17
+    paddingHorizontal: 17,
+    height: GRADIENT_BUTTON_HEIGHT,
+    justifyContent: 'center'
   },
   text: {
     textAlign: 'center',

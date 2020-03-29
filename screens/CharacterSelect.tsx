@@ -7,7 +7,7 @@ import { Audio } from 'expo-av'
 import { Comedian, SoundStoreProp } from './SoundGrid'
 import { inject, observer } from 'mobx-react'
 import { Octicons } from '@expo/vector-icons'
-import { LinearGradient } from 'expo-linear-gradient'
+import GradientButton from '../components/GradientButton'
 
 export const tuesdaysBlue = '#032D46'
 
@@ -18,7 +18,7 @@ export interface NavigationProps {
 // TODO: use better way of sharing nav options between screens
 export const navigationOptions = {
   headerStyle: { 
-    backgroundColor: tuesdaysBlue // TODO: change header color
+    backgroundColor: tuesdaysBlue // TODO: change header color?
   },
   headerTintColor: 'white'
 }
@@ -83,17 +83,11 @@ export default class CharacterSelect extends React.Component<NavigationProps & S
               <Text style={styles.comedianText}>Joe List</Text>
             </View>
           </View>
-          <LinearGradient
-            start={[0, 1]}
-            end={[1, 0]}
-            colors={['#7C98B3', '#637081']}
-            style={styles.supportButtonContainer}
-          >
-            {/*TODO: make linear gradient button component*/}
-            <TouchableOpacity onPress={this.onPressSupport}>
-              <Text style={{ color: 'white' }}>Support Joe and Mark!</Text>
-            </TouchableOpacity>
-          </LinearGradient>
+          <GradientButton
+            text="Support Joe and Mark!"
+            onPress={this.onPressSupport}
+            containerStyle={styles.supportButtonContainer}
+          />
         </View>
         <MuteButton />
       </View>
@@ -134,8 +128,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   supportButtonContainer: {
-    marginTop: 40,
-    padding: 17
+    marginTop: 40
   },
   chooseText: {
     color: 'white',
