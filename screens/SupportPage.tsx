@@ -55,7 +55,7 @@ export default class SupportPage extends React.Component<NavigationProps> {
         <>
           <View style={styles.emailContainer}>
             <Ionicons name="ios-mail" color="white" size={22} />
-            <Text style={styles.emailText}> : joesemail@gmail.com</Text>
+            <Text style={styles.emailText}> : joelistcomedy@gmail.com</Text>
           </View>
           <View style={styles.emailContainer}>
             <Ionicons name="ios-mail" color="white" size={22} />
