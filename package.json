@@ -16,7 +16,7 @@
     "expo-av": "~8.0.0",
     "expo-cli": "^3.11.9",
     "expo-linear-gradient": "~8.0.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mobx": "^5.15.1",
     "mobx-react": "^6.1.4",
     "node": "^12.14.1",
